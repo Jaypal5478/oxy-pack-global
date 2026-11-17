@@ -19,5 +19,8 @@ Hosted on GitHub Pages: https://jaypal5478.github.io/oxy-pack-global/
 4. Tick "Enforce HTTPS".
 5. Replace `https://jaypal5478.github.io/oxy-pack-global` with the new domain in all `.html` files, `sitemap.xml` and `robots.txt`.
 
+## Photo credits
+- Paper carry bags photo: "Bolsas de asa plana" by Bolsapubli, CC BY-SA 3.0, via Wikimedia Commons (https://commons.wikimedia.org/wiki/File:Bolsas-de-asa-plana-interior-bolsapubli.jpg). Replace with your own product photos when available.
+
 ## Quote form
 The form posts to FormSubmit (free) at sales@oxypackglobal.com. The first submission sends an activation email to that inbox — click the link once to start receiving enquiries.
