@@ -180,6 +180,94 @@ def quote_form(subject, cat_index=None, product=None):
 TRUST_ROW = ('<ul class="trust-row"><li>ISO 9001 certified</li><li>FSC® certified paper</li>'
              '<li>Exporting to 20+ countries</li><li>Reply within 1 business day</li></ul>')
 
+# Customers shown in the "Trusted by" logo grid (home) and logo strip (other pages).
+# file=None shows the name as a text tile. Logos live in assets/img/clients/.
+CLIENTS = [
+    ("Parle", "parle.png", 121, 58), ("Reliance Retail", "reliance-retail.png", 100, 50),
+    ("Balaji Wafers", "balaji-wafers.svg", 140, 107), ("Bikaji", "bikaji.png", 134, 73),
+    ("Chheda's", "chhedas.png", 296, 120), ("Mother's Recipe", "mothers-recipe.svg", 265, 100),
+    ("Gwalia Sweets", "gwalia-sweets.png", 124, 120), ("Ramdev", "ramdev.png", 147, 83),
+    ("Vimal Healthy Oils", "vimal.png", 148, 120), ("Kitchen Xpress", "kitchen-xpress.png", 132, 120),
+    ("Vijay Mamra", "vijay-mamra.png", 124, 99), ("Shubha", "shubha.png", 400, 84),
+    ("Nuvela Pharma", "nuvela-pharma.png", 155, 120), ("Alpha Crop Care", "alpha-crop-care.png", 120, 44),
+    ("Primeseal Straps", "primeseal.png", 234, 114), ("Ramoji Foods", None, 0, 0),
+    ("Ramraj Namkeen", None, 0, 0), ("Real Bites", None, 0, 0),
+]
+
+
+def client_item(name, f, w, h, hidden=False):
+    alt = "" if hidden else e(name)
+    if f:
+        return f'<img src="assets/img/clients/{f}" alt="{alt}" width="{w}" height="{h}" loading="lazy" decoding="async">'
+    return f'<span class="client-name"{" aria-hidden=\"true\"" if hidden else ""}>{e(name)}</span>'
+
+
+CLIENTS_GRID = ('<!-- clients -->\n<section class="sec clients" aria-labelledby="clients-h">\n<div class="wrap">\n'
+                '<div class="sec-head reveal" style="justify-content:center;text-align:center"><div style="max-width:720px">'
+                '<p class="eyebrow" style="justify-content:center">Our customers</p>'
+                '<h2 class="h2" id="clients-h">Trusted by leading Indian brands</h2>'
+                '<p class="lead" style="margin-top:16px">From national FMCG names to regional food, pharma and industrial companies.</p></div></div>\n'
+                '<ul class="clients-grid">'
+                + "".join(f'<li class="client">{client_item(*c)}</li>' for c in CLIENTS)
+                + '</ul>\n</div>\n</section>\n<!-- /clients -->')
+
+_track = "".join(f'<li>{client_item(*c)}</li>' for c in CLIENTS)
+_track_dup = "".join(f'<li aria-hidden="true">{client_item(*c, hidden=True)}</li>' for c in CLIENTS)
+LOGO_STRIP = ('<!-- clients -->\n<section class="logo-strip" aria-label="Customers">\n'
+              '<p class="logo-strip-label">Trusted by leading Indian brands</p>\n'
+              f'<div class="logo-viewport"><ul class="logo-track">{_track}{_track_dup}</ul></div>\n'
+              '</section>\n<!-- /clients -->')
+CLIENTS_RE = re.compile(r'<!-- clients -->.*?<!-- /clients -->\n?', re.S)
+
+# Customer testimonials (approved in writing by each customer).
+# "cats" = category pages the quote also appears on; "home" = shown on the home page.
+TESTIMONIALS = [
+    dict(company="Parle", role="Packaging & Purchase Department", industry="FMCG & consumer products", cats=["corrugated"], home=True,
+         quote="Reliable packaging and consistency matter greatly in the FMCG industry. Oxy Pack Global has demonstrated a good understanding of packaging requirements, and we appreciate their focus on quality, product protection and professional coordination."),
+    dict(company="Reliance Retail", role="Vendor Development Manager, Retail Operations", industry="Retail & distribution", cats=["bags"], home=True,
+         quote="Efficient packaging and dependable supply coordination are essential to smooth business operations. We appreciate the professional approach of Oxy Pack Global and their focus on understanding packaging requirements and delivering appropriate solutions."),
+    dict(company="Bikaji", role="Packaging Procurement Manager", industry="Namkeen & snacks", cats=["food"], home=True,
+         quote="From packaging quality to product handling, every detail matters in the snacks industry. Oxy Pack Global has shown a good understanding of our packaging needs. We value their professionalism, communication and commitment towards delivering suitable solutions."),
+    dict(company="Nuvela Pharma", role="Procurement Manager", industry="Pharmaceuticals", cats=["cartons"], home=True,
+         quote="Packaging quality and consistency are very important in our industry. We appreciate Oxy Pack Global's professional approach, attention to specifications and responsiveness throughout the process. It has been a good experience working with their team."),
+    dict(company="Shubha", role="Operations Manager", industry="Jewellery & lifestyle", cats=["cartons"], home=True,
+         quote="Packaging is an important part of the overall customer experience for us. We appreciate the quality of work from Oxy Pack Global and their understanding of how packaging should complement a brand's presentation. Their team has been helpful and easy to coordinate with."),
+    dict(company="Vijay Mamra", role="Purchase Manager", industry="Food & snacks", cats=[], home=True,
+         quote="We were looking for packaging that offers durability and consistent quality for our products. Oxy Pack Global understood our requirements well and provided packaging solutions that suited our needs. Their coordination and commitment to quality have made our experience smooth."),
+    dict(company="Primeseal Straps", role="Plant & Purchase Manager", industry="Industrial & manufacturing", cats=["corrugated", "protective"], home=False,
+         quote="Finding a packaging supplier who understands industrial requirements makes a difference. Oxy Pack Global has been supportive with our packaging needs, and we appreciate their approach towards product protection, quality and timely coordination."),
+    dict(company="Alpha Crop Care", role="Supply Chain Manager", industry="Agriculture & crop care", cats=["bags"], home=False,
+         quote="We need packaging solutions that are practical, dependable and suitable for our operational requirements. Oxy Pack Global has been cooperative in understanding our needs and providing suitable packaging. We appreciate their service and professional communication."),
+    dict(company="Gwalia Sweets", role="Production Manager", industry="Sweets & bakery", cats=["food"], home=False,
+         quote="Packaging plays a big role in maintaining product presentation, especially in the sweets business. We appreciate Oxy Pack Global's efforts in delivering packaging that aligns with our requirements and their willingness to understand our needs."),
+    dict(company="Vimal Healthy Oils", role="Procurement Head", industry="Edible oils & food processing", cats=["protective"], home=False,
+         quote="We value suppliers who maintain consistency and understand the importance of quality. Our experience with Oxy Pack Global has been positive, with good coordination and a practical approach to packaging requirements."),
+]
+_LOGO = {c[0]: c for c in CLIENTS}
+TESTI_RE = re.compile(r'<!-- testimonials -->.*?<!-- /testimonials -->\n?', re.S)
+
+
+def tcard(t, compact=False):
+    c = _LOGO.get(t["company"])
+    logo = (f'<img src="assets/img/clients/{c[1]}" alt="" width="{c[2]}" height="{c[3]}" loading="lazy" decoding="async">'
+            if c and c[1] else "")
+    return (f'<figure class="tcard{" compact" if compact else ""}"><span class="tind">{e(t["industry"])}</span>'
+            f'<blockquote><p>{e(t["quote"])}</p></blockquote>'
+            f'<figcaption>{logo}<span><b>{e(t["company"])}</b><span>{e(t["role"])}</span></span></figcaption></figure>')
+
+
+def testimonials_section(items, title, lead, soft=False):
+    cls = "tgrid two" if len(items) == 2 else "tgrid"
+    return (f'<!-- testimonials -->\n<section class="sec{" sec-soft" if soft else ""} testimonials" aria-labelledby="testi-h">\n<div class="wrap">\n'
+            f'<div class="sec-head reveal"><div><p class="eyebrow">What customers say</p><h2 class="h2" id="testi-h">{e(title)}</h2>'
+            f'<p class="lead" style="margin-top:16px">{e(lead)}</p></div></div>\n'
+            f'<ul class="{cls}">' + "".join(f'<li>{tcard(t)}</li>' for t in items) + '</ul>\n</div>\n</section>\n<!-- /testimonials -->')
+
+
+def cat_testimonials(key):
+    return [t for t in TESTIMONIALS if key in t["cats"]]
+
+
 HOW_WE_WORK = f'''<div class="info-card grid-lines">
 <h2 style="color:#fff;font-size:21px;margin-bottom:22px">How ordering works</h2>
 <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:12px;color:#D3DBEA;line-height:1.5">
@@ -257,6 +345,8 @@ def build_category(c):
 </div>
 </section>
 
+{testimonials_section(cat_testimonials(c['key']), "Trusted by brands like yours", "Feedback from customers who use our " + c['name'].lower() + ".", soft=True) if cat_testimonials(c['key']) else ""}
+{LOGO_STRIP}
 <section class="sec sec-soft">
 <div class="wrap g2 start">
 <div class="reveal"><div class="rel"><img src="{c['image']}" alt="{e(c['image_alt'])}" width="{c['image_w']}" height="{c['image_h']}" class="cover rounded" loading="lazy" decoding="async" style="height:400px"></div>
@@ -336,6 +426,7 @@ def build_product(p):
 </div>
 </section>
 
+{LOGO_STRIP}
 <section id="quote" class="sec sec-soft">
 <div class="wrap">
 <div class="sec-head"><div><p class="eyebrow">Request a quote</p><h2 class="h2">Get a price for this product</h2>
@@ -344,7 +435,7 @@ def build_product(p):
 <div class="form-card">
 {quote_form(f"Quote request — {p['name']}", CAT_INDEX[p['cat']], p['name'])}
 </div>
-<aside>{HOW_WE_WORK}</aside>
+<aside style="display:flex;flex-direction:column;gap:16px">{HOW_WE_WORK}{tcard((cat_testimonials(p['cat']) or TESTIMONIALS)[0], compact=True)}</aside>
 </div>
 </div>
 </section>
@@ -393,6 +484,7 @@ def build_overview():
 </div>
 </section>
 
+{LOGO_STRIP}
 <section id="categories" class="sec">
 <div class="wrap">
 <div class="sec-head reveal"><div>
@@ -437,11 +529,21 @@ def update_root_pages():
     s = read("contact.html")
     s = re.sub(r'<select id="category" name="category">.*?</select>',
                '<select id="category" name="category">' + "".join(f"<option>{e(o)}</option>" for o in SELECT_OPTS) + '</select>', s)
+    s = CLIENTS_RE.sub("", s)
+    s = s.replace("</main>", LOGO_STRIP + "\n</main>", 1)
+    s = TESTI_RE.sub("", s)
+    anchor = '<div class="card" style="padding:32px">'
+    assert s.count(anchor) == 1, "contact aside not found"
+    s = s.replace(anchor, "<!-- testimonials -->" + tcard(TESTIMONIALS[0], compact=True) + "<!-- /testimonials -->\n" + anchor)
     write("contact.html", s)
 
 
 def update_home():
     s = read("index.html")
+    s = CLIENTS_RE.sub("", s)
+    s = TESTI_RE.sub("", s)
+    s, k = re.subn(r'(<div class="marquee-wrap"[^\n]*\n)', lambda m: m[1] + "\n" + CLIENTS_GRID + "\n", s, count=1)
+    assert k == 1, "marquee not found"
     tiles = [("corrugated", "assets/img/corrugated-shipping-carton.jpg", 1050, 1400, "Corrugated cardboard shipping carton", True),
              ("cartons", "assets/img/kraft-gift-boxes.jpg", 1024, 683, "Kraft gift boxes with printed paper tape", False),
              ("bags", "assets/img/kraft-paper-carry-bags.jpg", 1400, 1100, "Brown kraft and white paper carry bags", False),
@@ -484,6 +586,9 @@ def update_home():
     else:
         s, k = re.subn(r'<section class="sec">\n<div class="wrap">\n<div class="cta-box grid-lines">.*?</section>', lambda m: form_section, s, count=1, flags=re.S)
     assert k == 1, "home CTA section not found"
+    home_t = testimonials_section([t for t in TESTIMONIALS if t["home"]], "Brands that rely on our packaging",
+                                  "Purchase and packaging teams on working with Oxy Pack Global.")
+    s = s.replace('<section id="quote" class="sec sec-soft">', home_t + "\n\n" + '<section id="quote" class="sec sec-soft">', 1)
     write("index.html", s)
 
 

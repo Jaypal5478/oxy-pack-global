@@ -24,6 +24,7 @@ Hosted on GitHub Pages with the custom domain https://oxypackglobal.com (see `CN
 
 ## Photo credits
 - Paper carry bags photo: "Bolsas de asa plana" by Bolsapubli, CC BY-SA 3.0, via Wikimedia Commons (https://commons.wikimedia.org/wiki/File:Bolsas-de-asa-plana-interior-bolsapubli.jpg). Replace with your own product photos when available.
+- Customer logos in `assets/img/clients/`: taken from each customer's own website and shown with their agreement as customers. The list and order are in `CLIENTS` in `tools/build_products.py`.
 - Product photos in `assets/img/products/`: Pexels (free licence, https://www.pexels.com/license/). Replace a photo by saving your own 4:3 image over the same file name.
 
 ## Quote form
