@@ -281,7 +281,7 @@ HOW_WE_WORK = f'''<div class="info-card grid-lines">
 <li><b style="color:#fff">Share your requirement</b> — size, quantity, print and destination.</li>
 <li><b style="color:#fff">Get a spec and quote</b> within one business day.</li>
 <li><b style="color:#fff">Approve a sample</b> before production starts.</li>
-<li><b style="color:#fff">We produce and ship</b> — FOB, CIF or DDP.</li>
+<li><b style="color:#fff">We produce and ship</b> to your port, worldwide.</li>
 </ol>
 <dl style="margin:26px 0 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.15)">
 <dt>Email</dt><dd><a href="mailto:sales@oxypackglobal.com">sales@oxypackglobal.com</a></dd>
@@ -306,8 +306,10 @@ def credit(c):
 
 
 # ---------- FAQs (shown on page and as FAQPage structured data) ----------
+SAMPLE_ANSWER = ("Yes. We make a sample for fit, strength and print approval before bulk production starts, "
+                 "so you know exactly what you will receive.")
 EXPORT_REACH = ("We export to buyers in 20+ countries across Africa, the Middle East, Europe, the Americas and Asia-Pacific. "
-                "We quote FOB, CIF or DDP, palletise and load the container, and prepare the export documents.")
+                "We palletise and load the container and handle the export paperwork.")
 
 
 def short_name(p):
@@ -340,8 +342,7 @@ def product_faqs(p):
          "Share your quantity in the quote form and we confirm the MOQ with your price."),
         (f"Can you print our logo and brand on {n}?",
          f"Yes. Every order is made to your specification, including your artwork and brand colours. Printing options: {printing}."),
-        ("Can I get a sample before placing a bulk order?",
-         "Yes. We make a sample for fit, strength and print approval before bulk production starts, so you know exactly what you will receive."),
+        ("Can I get a sample before placing a bulk order?", SAMPLE_ANSWER),
         (f"Do you ship {n} to my country?", EXPORT_REACH),
         (f"What is the HS code for {n}?",
          f"{p['hs']} is the indicative HS code. The exact code depends on construction and your country's tariff schedule, "
@@ -445,7 +446,7 @@ def build_category(c):
                                  "itemListElement": [{"@type": "ListItem", "position": i, "url": SITE + "/" + prod_url(p), "name": p["name"]}
                                                      for i, p in enumerate(items, 1)]}), faq_ld(category_faqs(c))]
     title = f"{c['name']} | Manufacturer & Exporter India"
-    desc = f"{c['short']} Custom sizes and printing, samples before bulk orders, shipped worldwide FOB, CIF or DDP. Get a free quote."
+    desc = f"{c['short']} Custom sizes and printing, samples before bulk orders, shipped worldwide. Get a free quote."
     page(cat_url(c), title, desc, main, lds, image=c["image"])
 
 
@@ -528,7 +529,7 @@ def build_product(p):
            faq_ld(product_faqs(p))]
     sn = re.sub(r"\s*\(.*?\)", "", p["name"]).strip()
     page(prod_url(p), f"{sn[0].upper() + sn[1:]} | Manufacturer & Exporter India",
-         f"{p['short']} Custom sizes and printing, samples before bulk orders, shipped worldwide FOB, CIF or DDP. Get a free quote.",
+         f"{p['short']} Custom sizes and printing, samples before bulk orders, shipped worldwide. Get a free quote.",
          main, lds, image=p["img"], band=False)
 
 
@@ -596,27 +597,187 @@ def build_overview():
          main, lds, extra=redirect)
 
 
+PROD = {p['slug']: p for p in PRODUCTS}
+
+
 # ---------- export page ----------
 EXPORT_FAQS = [
     ("How do I start an order as an overseas buyer?",
-     "Send your product, size, quantity and destination port through the quote form or WhatsApp. We reply within one business day with a recommended specification and price, then share a sample for approval before production."),
-    ("Which Incoterms do you offer?",
-     "We quote FOB, CIF or DDP, and Ex-Works on request. Tell us your preferred terms and destination port and we include freight in the quote where needed."),
+     "Send your product, size, quantity and destination through the quote form or WhatsApp. We reply within one business day with a recommended specification and price, then share a sample for approval before production."),
+    ("Which countries do you ship to?",
+     "We export to buyers in 20+ countries across Africa, the Middle East, Europe, the Americas and Asia-Pacific, by sea from India's west-coast ports."),
     ("Can you ship full containers and smaller orders?",
-     "Yes. We plan container loads for FCL shipments and can book LCL for smaller orders, shipping from India's west-coast ports."),
-    ("Which export documents do you provide?",
-     "We prepare the commercial invoice, packing list and certificate of origin in-house, and coordinate the bill of lading with the shipping line or forwarder."),
+     "Yes. We ship full container loads and can also arrange smaller shipments, so you can start with a trial order."),
     ("Do you check quality before shipping?",
      "Yes. We work to ISO 9001 processes, run batch tests for bursting strength, edge crush, compression and moisture where relevant, and share pre-shipment inspection reports before loading."),
     ("Can you ship different products in one container?",
-     "Yes. Mixed loads of boxes, bags, cartons and protective packaging can be consolidated into one container to save freight."),
+     "Yes. Boxes, bags, cartons and protective packaging can be combined into one container to save freight."),
+    ("Can you print our artwork and languages?",
+     "Yes. Every order is printed from your artwork, including multilingual and Arabic text, with colour matching before production."),
 ]
-INCOTERMS = [
-    ("EXW", "Ex-Works", "Goods ready at our facility, export-packed.", "Pickup, export clearance, freight, insurance, import duties."),
-    ("FOB", "Free on Board", "Packing, inland transport, export clearance, loading on the vessel.", "Ocean freight, insurance, import clearance and duties."),
-    ("CIF", "Cost, Insurance & Freight", "Everything in FOB plus ocean freight and insurance to your port.", "Unloading, import clearance, duties, delivery."),
-    ("DDP", "Delivered Duty Paid", "Delivery to your door, including import duties and clearance.", "Unloading at your premises."),
+
+# ---------- market landing pages ----------
+MARKETS = [
+    dict(
+        slug="uae-gcc-paper-packaging", short="UAE & GCC",
+        name="UAE & GCC", title="Paper Packaging Supplier for UAE & GCC | From India",
+        description="Paper cups, food boxes, bagasse tableware, carry bags, gift boxes and export cartons made in India for buyers in the UAE, Saudi Arabia, Oman, Qatar, Kuwait and Bahrain.",
+        h1="Paper packaging for the <em>UAE & GCC.</em>",
+        intro="We manufacture plastic-free paper packaging in Gujarat, India — a short sea crossing from the Gulf — for cafés, restaurant chains, retailers, gifting brands and distributors across the UAE and GCC.",
+        hero="assets/img/export-container-port.jpg",
+        countries=["UAE", "Saudi Arabia", "Oman", "Qatar", "Kuwait", "Bahrain"],
+        reasons=[
+            ("Close to the Gulf", "We ship from India's west coast, a short sea route to Jebel Ali and other Gulf ports."),
+            ("India–UAE CEPA", "The India–UAE Comprehensive Economic Partnership Agreement, in force since May 2022, can lower import duty on qualifying goods."),
+            ("Ready for plastic bans", "Paper cups, bowls, food boxes, straws and bags that replace the single-use plastics now restricted in the UAE and Oman."),
+            ("Built for your brand", "Printed from your artwork in English and Arabic, with premium finishes for sweets, dates, perfume and gifting."),
+        ],
+        rules=[
+            "<strong>UAE:</strong> a nationwide ban on single-use plastic bags has applied since 1 January 2024. From 1 January 2026 it was extended to single-use plastic cups and lids, cutlery, plates, straws, stirrers and food containers.",
+            "<strong>Dubai:</strong> the final phase of Dubai's single-use products regulation took effect on 1 January 2026.",
+            "<strong>Oman:</strong> a phased ban on plastic shopping bags reached its fifth phase on 1 July 2026, with the aim of eliminating them nationwide by 2027.",
+        ],
+        products=["paper-cups", "kraft-takeaway-boxes", "moulded-fibre-tableware", "kraft-carry-bags", "rigid-gift-boxes", "corrugated-export-cartons"],
+        industries=["Cafés & coffee chains", "Restaurants & QSR", "Cloud kitchens", "Catering & airlines", "Retail & malls",
+                    "Dates, sweets & bakeries", "Perfume & gifting", "Logistics & re-export"],
+        testimonials=["Bikaji", "Shubha", "Vijay Mamra"],
+        faqs=[
+            ("Do you supply packaging to Dubai, Abu Dhabi and Saudi Arabia?",
+             "Yes. We ship to buyers across the UAE, Saudi Arabia, Oman, Qatar, Kuwait and Bahrain, by sea from India's west coast to the main Gulf ports."),
+            ("Do you have paper alternatives to the plastics banned in the UAE?",
+             "Yes. We make paper cups and lids, paper bowls, kraft food boxes, bagasse plates and containers, paper straws and paper carry bags. Please confirm the requirements for your specific product with your local authority."),
+            ("Can you print Arabic and English on our packaging?",
+             "Yes. We print from your artwork, including Arabic and bilingual designs, and match your brand colours before production."),
+            ("Do you make premium boxes for dates, sweets and perfume?",
+             "Yes. Rigid gift boxes, folding cartons and paper tubes with foil, embossing and spot UV are among our most popular products for Gulf gifting brands."),
+            ("Can I see a sample before ordering?",
+             "Yes. We make a sample for fit, strength and print approval before bulk production starts."),
+        ],
+    ),
+    dict(
+        slug="east-africa-paper-packaging", short="East Africa",
+        name="East Africa", title="Paper Packaging Supplier for Kenya & East Africa | From India",
+        description="Paper carry bags, SOS bags, multiwall sacks, corrugated cartons and food boxes made in India for buyers in Kenya, Tanzania, Uganda and Rwanda.",
+        h1="Paper packaging for <em>East Africa.</em>",
+        intro="Africa was our first export market. We supply paper bags, sacks, corrugated cartons and food packaging to retailers, millers, fresh-produce exporters and distributors across Kenya, Tanzania, Uganda and Rwanda.",
+        hero="assets/img/export-cartons-forklift.jpg",
+        countries=["Kenya", "Tanzania", "Uganda", "Rwanda"],
+        reasons=[
+            ("Our first export market", "We have shipped to African buyers from our early years and understand the region's requirements."),
+            ("Direct sea routes", "Regular sailings from India's west coast to Mombasa and Dar es Salaam, the gateways for Kenya, Tanzania, Uganda and Rwanda."),
+            ("Plastic-bag ban ready", "Kraft carry bags and SOS bags that replace the plastic bags banned in Kenya, Tanzania and Rwanda."),
+            ("Strong for heavy loads", "Multiwall sacks and 5 or 7-ply cartons for flour, cement, feed, fresh produce and long inland journeys."),
+        ],
+        rules=[
+            "<strong>Kenya:</strong> plastic carrier bags have been banned since August 2017, and single-use plastics have been banned in protected areas since 2020.",
+            "<strong>Tanzania:</strong> plastic carrier bags have been banned since June 2019.",
+            "<strong>Rwanda:</strong> has one of the world's strictest bans on plastic bags and single-use plastics.",
+            "<strong>Regional:</strong> an East African Community bill to restrict single-use plastics across the region has been proposed.",
+        ],
+        products=["kraft-carry-bags", "sos-grocery-bags", "multiwall-paper-sacks", "corrugated-export-cartons", "heavy-duty-boxes", "kraft-takeaway-boxes"],
+        industries=["Supermarkets & retail", "Flour, cement & feed millers", "Flower & fresh-produce exporters", "Tea & coffee",
+                    "FMCG distributors", "Restaurants & QSR", "Pharmaceuticals", "Agriculture & agri-inputs"],
+        testimonials=["Alpha Crop Care", "Primeseal Straps", "Vimal Healthy Oils"],
+        faqs=[
+            ("Do you ship to Mombasa and Dar es Salaam?",
+             "Yes. We ship by sea from India's west coast to Mombasa and Dar es Salaam, the main ports serving Kenya, Tanzania, Uganda and Rwanda."),
+            ("Are your paper bags an alternative to banned plastic bags?",
+             "Yes. Our kraft carry bags and SOS grocery bags are made entirely from paper. Please confirm the requirements for your specific use with your local authority."),
+            ("Do you make sacks for flour, maize, cement or animal feed?",
+             "Yes. We make 2 to 4-ply multiwall paper sacks for 10–50 kg fills, in valve or open-mouth styles, printed with your brand and product information."),
+            ("Can you supply cartons for flowers, avocados and fresh produce?",
+             "Yes. We make corrugated cartons with vent holes and water-resistant coatings, sized and rated for your produce and cold-chain shipping."),
+            ("Can I see a sample before ordering?",
+             "Yes. We make a sample for fit, strength and print approval before bulk production starts."),
+        ],
+    ),
 ]
+
+
+def market_url(m):
+    return f"markets/{m['slug']}.html"
+
+
+def market_cards():
+    return "".join(
+        f'<a class="ccard reveal" href="{market_url(m)}"><img src="{m["hero"]}" alt="" width="1024" height="640" loading="lazy" decoding="async">'
+        f'<div class="body"><span class="num">EXPORT MARKET</span><h3>Paper packaging for {e(m["name"])}</h3>'
+        f'<p>{e(", ".join(m["countries"]))}</p><span class="more">Explore {e(m["short"])} {ARROW}</span></div></a>' for m in MARKETS)
+
+
+def build_market(m):
+    links = [("Home", "index.html"), ("Export", "export.html"), (m["name"], market_url(m))]
+    wa = f"https://wa.me/{WA}?text=" + urllib.parse.quote(f"Hello OXY PACK GLOBAL, I'm a buyer in {m['name']} and would like a quote.")
+    prods = [PROD[s] for s in m["products"] if s in PROD]
+    tests = [t for t in TESTIMONIALS if t["company"] in m["testimonials"]]
+    others = [o for o in MARKETS if o is not m]
+    plain_h1 = re.sub(r"<.*?>", "", m["h1"])
+    main = f'''<section class="page-hero dark grid-lines">
+<img src="{m['hero']}" alt="" class="bg-img" fetchpriority="high" style="opacity:.22">
+<div class="glow" style="right:-160px;top:-200px"></div>
+<div class="wrap">
+{crumbs(links)}
+<span class="pill">Export market · {e(" · ".join(m["countries"][:4]))}</span>
+<h1 style="margin-top:22px">{m['h1']}</h1>
+<p>{e(m['intro'])}</p>
+<div class="btn-row" style="margin-top:32px"><a href="#quote" class="btn btn-green">Get a free quote {ARROW}</a><a href="{e(wa)}" class="btn btn-ghost" target="_blank" rel="noopener">{WA_ICON} Talk to export sales</a></div>
+{TRUST_ROW}
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap">
+<div class="sec-head reveal"><div><p class="eyebrow">Why buyers in {e(m['short'])} choose us</p><h2 class="h2">Your paper packaging partner in India</h2></div></div>
+<div class="g4">{"".join(f'<div class="soft-card reveal"><h3>{e(a)}</h3><p>{e(b)}</p></div>' for a, b in m["reasons"])}</div>
+</div>
+</section>
+
+<section class="sec sec-soft">
+<div class="wrap g2 start">
+<div class="reveal">
+<p class="eyebrow">Moving away from plastic</p>
+<h2 class="h2" style="margin-bottom:20px">Why demand for paper is growing in {e(m['short'])}</h2>
+<p class="lead">Governments across the region are restricting single-use plastics — and businesses need reliable paper alternatives.</p>
+<ul class="checks" style="margin-top:24px">{"".join(f'<li>{TICK}<span>{r}</span></li>' for r in m["rules"])}</ul>
+</div>
+<div class="reveal">
+<p class="eyebrow">Industries we serve</p>
+<h2 class="h2" style="margin-bottom:20px">Who we supply in {e(m['short'])}</h2>
+<div class="regions light">{"".join(f'<span>{e(i)}</span>' for i in m["industries"])}</div>
+<p style="margin-top:28px;font-size:15px;color:var(--muted)">Countries we ship to in the region: {e(", ".join(m["countries"]))}.</p>
+<a href="#quote" class="btn btn-navy" style="margin-top:28px">Tell us what you need {ARROW}</a>
+</div>
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap">
+<div class="sec-head reveal"><div><p class="eyebrow">Popular in {e(m['short'])}</p><h2 class="h2">Packaging we supply to the region</h2></div><a href="products.html" class="link-u">All products →</a></div>
+<ul class="pgrid g3c">
+{chr(10).join(pcard(x, prod_url(x)) for x in prods)}
+</ul>
+</div>
+</section>
+
+{LOGO_STRIP}
+{testimonials_section(tests, "What our customers say", "Brands that rely on our packaging and coordination.", soft=True) if tests else ""}
+
+{faq_section(m['faqs'], "Buying from us in " + m['short'] + " — common questions")}
+
+<section id="quote" class="sec sec-soft">
+<div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Request a quote</p><h2 class="h2">Get a quote for {e(m['short'])}</h2>
+<p class="lead" style="margin-top:16px">Tell us the product, quantity and destination. We reply within one business day with a recommended specification and price.</p></div></div>
+<div class="cgrid">
+<div class="form-card">
+{quote_form("Quote request — " + m['name'] + " market page")}
+</div>
+<aside style="display:flex;flex-direction:column;gap:16px">{HOW_WE_WORK}{"".join(f'<a class="ccard mini" href="{market_url(o)}"><div class="body"><span class="tind">Other market</span><h3>Paper packaging for {e(o["name"])}</h3></div></a>' for o in others)}<a class="ccard mini" href="export.html"><div class="body"><span class="tind">Exporting</span><h3>How we export worldwide</h3></div></a></aside>
+</div>
+</div>
+</section>'''
+    lds = [crumbs_ld(links), faq_ld(m["faqs"])]
+    page(market_url(m), m["title"], m["description"], main, lds, image=m["hero"], band=False, active="export.html")
 
 
 def build_export():
@@ -629,14 +790,11 @@ def build_export():
              ("Sample & approval", "Dieline and physical sample for fit, strength and print sign-off."),
              ("Production", "Scheduled manufacturing with a confirmed dispatch date and regular updates."),
              ("Quality check", "Batch testing and pre-shipment inspection reports shared before loading."),
-             ("Shipping", "Palletised, container-loaded and shipped FOB, CIF or DDP with full export documents.")]
-    inc = "".join(f'<tr><th scope="row"><b>{a}</b><span>{e(n)}</span></th><td>{e(w)}</td><td>{e(y)}</td></tr>' for a, n, w, y in INCOTERMS)
-    docs = ["Commercial invoice with HS codes", "Packing list", "Certificate of origin", "Bill of lading (with your forwarder or the shipping line)",
-            "Pre-shipment inspection report"]
+             ("Shipping", "Palletised, container-loaded and shipped to your port with the export paperwork handled.")]
     why = [("Made to order", "Your dimensions, board grade, print and quantity — not off-the-shelf stock."),
            ("Certified quality", "ISO 9001 processes, FSC®-certified paper and an IEC-registered exporter."),
            ("100% paper", "Plastic-free packaging for brands and markets moving away from single-use plastic."),
-           ("One partner", "Design, printing, production, testing, documents and shipping under one roof."),
+           ("One partner", "Design, printing, production, testing and shipping under one roof."),
            ("Samples first", "Approve a physical sample before we start bulk production."),
            ("Fast answers", "A reply within one business day, by email or WhatsApp.")]
     home_t = [t for t in TESTIMONIALS if t["company"] in ("Shubha", "Nuvela Pharma", "Primeseal Straps")]
@@ -647,7 +805,7 @@ def build_export():
 {crumbs(links)}
 <span class="pill">Export packaging partner · Since 2017</span>
 <h1 style="margin-top:22px">Paper packaging from India, <em>shipped to your port.</em></h1>
-<p>We manufacture custom paper packaging in Rajkot, India and export it to businesses in 20+ countries — with samples first, FOB, CIF or DDP terms, and every export document handled.</p>
+<p>We manufacture custom paper packaging in Rajkot, India and export it to businesses in 20+ countries — with samples first, quality checks before loading, and the export paperwork handled.</p>
 <div class="btn-row" style="margin-top:32px"><a href="#quote" class="btn btn-green">Get a free export quote {ARROW}</a><a href="https://wa.me/{WA}" class="btn btn-ghost" target="_blank" rel="noopener">{WA_ICON} Talk to export sales</a></div>
 {TRUST_ROW}
 </div>
@@ -656,7 +814,7 @@ def build_export():
 <section class="sec">
 <div class="wrap">
 <div class="sec-head reveal"><div><p class="eyebrow">Who we supply</p><h2 class="h2">Packaging for every business that ships</h2>
-<p class="lead" style="margin-top:16px">Whatever you sell and wherever you sell it, we make the paper packaging and deliver it to your port or warehouse.</p></div></div>
+<p class="lead" style="margin-top:16px">Whatever you sell and wherever you sell it, we make the paper packaging and deliver it to your port.</p></div></div>
 <div class="g4">{"".join(f'<div class="soft-card reveal"><h3>{e(a)}</h3><p>{e(b)}</p></div>' for a, b in who)}</div>
 </div>
 </section>
@@ -672,21 +830,11 @@ def build_export():
 </div>
 </section>
 
-<section class="sec">
-<div class="wrap g2 start">
-<div class="reveal">
-<p class="eyebrow">Shipping terms</p>
-<h2 class="h2" style="margin-bottom:20px">Incoterms we work with</h2>
-<p class="lead">Choose how much of the journey you want us to handle. We quote FOB, CIF or DDP, and Ex-Works on request.</p>
-<div class="table-wrap"><table class="itable"><thead><tr><th scope="col">Term</th><th scope="col">We handle</th><th scope="col">You handle</th></tr></thead><tbody>{inc}</tbody></table></div>
-</div>
-<div class="reveal">
-<p class="eyebrow">Paperwork</p>
-<h2 class="h2" style="margin-bottom:20px">Export documents, handled</h2>
-<p class="lead">As an IEC-registered exporter, we prepare the paperwork your customs broker needs.</p>
-<ul class="checks" style="margin-top:24px">{"".join(f'<li>{TICK}<span>{e(d)}</span></li>' for d in docs)}</ul>
-<p style="margin-top:24px;font-size:15px;color:var(--muted)">Shipping full containers (FCL) or smaller loads (LCL) from India's west-coast ports. Mixed products can share one container.</p>
-</div>
+<section class="sec" id="markets">
+<div class="wrap">
+<div class="sec-head reveal"><div><p class="eyebrow">Markets we serve</p><h2 class="h2">Packaging for your region</h2>
+<p class="lead" style="margin-top:16px">See the products, industries and regulations that matter most in your market.</p></div></div>
+<div class="cgrid3">{market_cards()}<div class="ccard navy reveal"><div class="body"><span class="num" style="color:var(--green-300)">OTHER COUNTRIES</span><h3>Shipping somewhere else?</h3><p>We export to 20+ countries across Africa, the Middle East, Europe, the Americas and Asia-Pacific.</p><a class="more" href="#quote">Ask for a quote {ARROW}</a></div></div></div>
 </div>
 </section>
 
@@ -716,7 +864,7 @@ def build_export():
 </section>'''
     lds = [crumbs_ld(links), faq_ld(EXPORT_FAQS)]
     page("export.html", "Paper Packaging Exporter from India — Worldwide Shipping | OXY PACK GLOBAL",
-         "Custom paper packaging from India shipped to 20+ countries. FOB, CIF or DDP, samples before bulk orders, export documents handled. Get a free export quote.",
+         "Custom paper packaging made in India and shipped to 20+ countries. Samples before bulk orders, quality checks before loading. Get a free export quote.",
          main, lds, image="assets/img/export-container-port.jpg", band=False, active="export.html")
 
 
@@ -891,7 +1039,7 @@ def update_home():
 <ul class="checks" style="margin:28px 0 32px">
 <li>{TICK}<span>Custom sizes, board grades and printing</span></li>
 <li>{TICK}<span>Samples before bulk production</span></li>
-<li>{TICK}<span>FOB, CIF or DDP shipping to 20+ countries</span></li>
+<li>{TICK}<span>Shipping to 20+ countries worldwide</span></li>
 </ul>
 <div class="info-card grid-lines">
 <dl style="margin:0">
@@ -924,7 +1072,7 @@ def update_home():
 def write_sitemap():
     today = date.today().isoformat()
     urls = [("", "1.0"), ("products.html", "0.9")] + [(cat_url(c), "0.8") for c in CATEGORIES] + \
-           [(prod_url(p), "0.7") for p in PRODUCTS] + [("export.html", "0.9"), ("guides.html", "0.7")] + \
+           [(prod_url(p), "0.7") for p in PRODUCTS] + [("export.html", "0.9")] + [(market_url(m), "0.8") for m in MARKETS] + [("guides.html", "0.7")] + \
            [(guide_url(g), "0.7") for g in GUIDES] + [("about.html", "0.6"), ("industries.html", "0.6"), ("contact.html", "0.8")]
     body = "\n".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>"
                      for u, pr in urls)
@@ -938,6 +1086,8 @@ if __name__ == "__main__":
         build_product(p)
     build_overview()
     build_export()
+    for m in MARKETS:
+        build_market(m)
     for g in GUIDES:
         build_guide(g)
     build_guides_index()
