@@ -5,7 +5,9 @@ Static website (HTML, CSS, JS) for OXY PACK GLOBAL, a paper packaging manufactur
 ## Structure
 - `index.html`, `about.html`, `products.html`, `industries.html`, `contact.html`, `404.html`
 - `products/` — 5 category pages and 20 product pages (generated, don't edit by hand)
+- `export.html`, `guides.html`, `guides/` — export page, buyer guides index and guide articles (generated)
 - `tools/products_data.py` — text, specs and images for every category and product
+- `tools/guides_data.py` — buyer guide articles (title, meta description, body HTML, FAQs, related products)
 - `tools/build_products.py` — rebuilds `products.html`, `products/`, the home-page product tiles and quote form, footer product links and `sitemap.xml`. After editing the data (or the header/footer in `about.html`), run `python tools/build_products.py`
 - `assets/css/style.css` — all styles
 - `assets/js/main.js` — mobile menu, scroll animations, quote form

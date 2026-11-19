@@ -58,7 +58,11 @@ def write(path, text):
 ABOUT = read("about.html")
 ORG_LD = re.search(r'<script type="application/ld\+json">\{"@context": "https://schema.org", "@type": \["Organization".*?</script>', ABOUT).group(0)
 HEADER = ABOUT[ABOUT.index('<a class="skip"'):ABOUT.index('<main id="main">')]
-HEADER = HEADER.replace(' aria-current="page"', '').replace('<a href="products.html">', '<a href="products.html" aria-current="page">')
+HEADER_BASE = HEADER.replace(' aria-current="page"', '')
+
+
+def header_for(active):
+    return HEADER_BASE.replace(f'<a href="{active}">', f'<a href="{active}" aria-current="page">') if active else HEADER_BASE
 FOOTER = ABOUT[ABOUT.index('<footer class="site-footer">'):ABOUT.index('<script src="assets/js/main.js"')]
 
 FOOTER_PRODUCTS = ('<div><h2>Products</h2><ul><li><a href="products.html">All products</a></li>'
@@ -83,7 +87,7 @@ def crumbs_ld(items):
         {"@type": "ListItem", "position": i, "name": n, "item": SITE + "/" + u} for i, (n, u) in enumerate(items, 1)]})
 
 
-def page(path, title, desc, main, lds, image="assets/img/og-image.jpg", band=True, extra=""):
+def page(path, title, desc, main, lds, image="assets/img/og-image.jpg", band=True, extra="", active="products.html", og_type="website"):
     prefix = "../" * path.count("/")
     url = SITE + "/" + path
     img = SITE + "/" + image
@@ -98,7 +102,7 @@ def page(path, title, desc, main, lds, image="assets/img/og-image.jpg", band=Tru
 <link rel="canonical" href="{url}">
 <meta name="theme-color" content="#0B1F44">
 <meta name="author" content="OXY PACK GLOBAL">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{og_type}">
 <meta property="og:site_name" content="OXY PACK GLOBAL">
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
@@ -125,7 +129,7 @@ def page(path, title, desc, main, lds, image="assets/img/og-image.jpg", band=Tru
 '''
     band_html = ('<section class="band"><div class="wrap"><h2>Need something not listed? We\'ll engineer it in paper.</h2>'
                  f'<a href="contact.html" class="btn btn-dark">Send your requirement {ARROW}</a></div></section>') if band else ""
-    body = HEADER + '\n<main id="main">\n' + main + '\n</main>\n' + band_html + FOOTER + '<script src="assets/js/main.js" defer></script>\n</body>\n</html>\n'
+    body = header_for(active) + '\n<main id="main">\n' + main + '\n</main>\n' + band_html + FOOTER + '<script src="assets/js/main.js" defer></script>\n</body>\n</html>\n'
     write(path, prefixed(head, prefix) + prefixed(body, prefix))
 
 
@@ -183,15 +187,17 @@ TRUST_ROW = ('<ul class="trust-row"><li>ISO 9001 certified</li><li>FSC® certifi
 # Customers shown in the "Trusted by" logo grid (home) and logo strip (other pages).
 # file=None shows the name as a text tile. Logos live in assets/img/clients/.
 CLIENTS = [
-    ("Parle", "parle.png", 121, 58), ("Reliance Retail", "reliance-retail.png", 100, 50),
-    ("Balaji Wafers", "balaji-wafers.svg", 140, 107), ("Bikaji", "bikaji.png", 134, 73),
-    ("Chheda's", "chhedas.png", 296, 120), ("Mother's Recipe", "mothers-recipe.svg", 265, 100),
-    ("Gwalia Sweets", "gwalia-sweets.png", 124, 120), ("Ramdev", "ramdev.png", 147, 83),
-    ("Vimal Healthy Oils", "vimal.png", 148, 120), ("Kitchen Xpress", "kitchen-xpress.png", 132, 120),
+    ("Tiffany & Co.", "tiffany.svg", 634, 70), ("Logitech", "logitech.png", 236, 71),
+    ("Zepto", "zepto.svg", 90, 30), ("UPL", "upl.svg", 1041, 462),
+    ("Vadilal", "vadilal.svg", 150, 73), ("MDH", "mdh.png", 184, 60),
+    ("Balaji Wafers", "balaji-wafers.svg", 140, 107), ("Chheda's", "chhedas.png", 296, 120),
+    ("Mother's Recipe", "mothers-recipe.svg", 265, 100), ("GIVA", "giva.png", 411, 120),
+    ("Gwalia Sweets", "gwalia-sweets.png", 124, 120), ("Vimal Healthy Oils", "vimal.png", 148, 120),
+    ("Kitchen Xpress", "kitchen-xpress.png", 132, 120), ("Sheetal Ice Cream", "sheetal.png", 292, 120),
     ("Vijay Mamra", "vijay-mamra.png", 124, 99), ("Shubha", "shubha.png", 400, 84),
-    ("Nuvela Pharma", "nuvela-pharma.png", 155, 120), ("Alpha Crop Care", "alpha-crop-care.png", 120, 44),
-    ("Primeseal Straps", "primeseal.png", 234, 114), ("Ramoji Foods", None, 0, 0),
-    ("Ramraj Namkeen", None, 0, 0), ("Real Bites", None, 0, 0),
+    ("Water2", "water2.png", 457, 113), ("Floky", "floky.png", 258, 62),
+    ("BioRoot Labs", "bioroot.png", 382, 65), ("Nuvela Pharma", "nuvela-pharma.png", 155, 120),
+    ("Alpha Crop Care", "alpha-crop-care.png", 120, 44), ("Primeseal Straps", "primeseal.png", 234, 114),
 ]
 
 
@@ -205,16 +211,17 @@ def client_item(name, f, w, h, hidden=False):
 CLIENTS_GRID = ('<!-- clients -->\n<section class="sec clients" aria-labelledby="clients-h">\n<div class="wrap">\n'
                 '<div class="sec-head reveal" style="justify-content:center;text-align:center"><div style="max-width:720px">'
                 '<p class="eyebrow" style="justify-content:center">Our customers</p>'
-                '<h2 class="h2" id="clients-h">Trusted by leading Indian brands</h2>'
-                '<p class="lead" style="margin-top:16px">From national FMCG names to regional food, pharma and industrial companies.</p></div></div>\n'
+                '<h2 class="h2" id="clients-h">Trusted by leading brands in India and abroad</h2>'
+                '<p class="lead" style="margin-top:16px">From global names in jewellery and electronics to India&#8217;s best-known FMCG, food, agri and pharma companies.</p></div></div>\n'
                 '<ul class="clients-grid">'
                 + "".join(f'<li class="client">{client_item(*c)}</li>' for c in CLIENTS)
+                + '<li class="client more"><span class="client-name">+ many more</span></li>'
                 + '</ul>\n</div>\n</section>\n<!-- /clients -->')
 
 _track = "".join(f'<li>{client_item(*c)}</li>' for c in CLIENTS)
 _track_dup = "".join(f'<li aria-hidden="true">{client_item(*c, hidden=True)}</li>' for c in CLIENTS)
 LOGO_STRIP = ('<!-- clients -->\n<section class="logo-strip" aria-label="Customers">\n'
-              '<p class="logo-strip-label">Trusted by leading Indian brands</p>\n'
+              '<p class="logo-strip-label">Trusted by leading brands in India and abroad</p>\n'
               f'<div class="logo-viewport"><ul class="logo-track">{_track}{_track_dup}</ul></div>\n'
               '</section>\n<!-- /clients -->')
 CLIENTS_RE = re.compile(r'<!-- clients -->.*?<!-- /clients -->\n?', re.S)
@@ -298,6 +305,69 @@ def credit(c):
     return f'<p class="photo-credit">{e(t)}, <a href="{u}" rel="nofollow noopener" target="_blank">{lic}</a></p>'
 
 
+# ---------- FAQs (shown on page and as FAQPage structured data) ----------
+EXPORT_REACH = ("We export to buyers in 20+ countries across Africa, the Middle East, Europe, the Americas and Asia-Pacific. "
+                "We quote FOB, CIF or DDP, palletise and load the container, and prepare the export documents.")
+
+
+def short_name(p):
+    n = re.sub(r"\s*\(.*?\)", "", p["name"]).strip()
+    return n[0].lower() + n[1:]
+
+
+def faq_ld(items):
+    return ld({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in items]})
+
+
+def faq_section(items, title, soft=False, eyebrow="FAQ"):
+    rows = "".join(f'<details class="faq-item"{" open" if i == 0 else ""}><summary>{e(q)}</summary><p>{e(a)}</p></details>'
+                   for i, (q, a) in enumerate(items))
+    return (f'<section class="sec{" sec-soft" if soft else ""}" id="faq">\n<div class="wrap faq-wrap">\n'
+            f'<div class="reveal"><p class="eyebrow">{e(eyebrow)}</p><h2 class="h2">{e(title)}</h2>'
+            f'<p class="lead" style="margin-top:16px">Can’t find your answer? Ask our export team — we reply within one business day.</p>'
+            f'<div class="btn-row" style="margin-top:28px"><a href="contact.html" class="btn btn-navy" data-quote>Ask a question {ARROW}</a>'
+            f'<a href="https://wa.me/{WA}" target="_blank" rel="noopener" class="btn btn-wa">{WA_ICON} WhatsApp</a></div></div>\n'
+            f'<div class="faq">{rows}</div>\n</div>\n</section>')
+
+
+def product_faqs(p):
+    n = short_name(p)
+    printing = dict(p["specs"]).get("Printing") or dict(CAT[p["cat"]]["specs"]).get("Printing", "flexo or offset printing")
+    return [
+        (f"What is the minimum order quantity for {n}?",
+         f"The MOQ depends on size, material and printing — plain {n} usually have lower minimums than fully printed designs. "
+         "Share your quantity in the quote form and we confirm the MOQ with your price."),
+        (f"Can you print our logo and brand on {n}?",
+         f"Yes. Every order is made to your specification, including your artwork and brand colours. Printing options: {printing}."),
+        ("Can I get a sample before placing a bulk order?",
+         "Yes. We make a sample for fit, strength and print approval before bulk production starts, so you know exactly what you will receive."),
+        (f"Do you ship {n} to my country?", EXPORT_REACH),
+        (f"What is the HS code for {n}?",
+         f"{p['hs']} is the indicative HS code. The exact code depends on construction and your country's tariff schedule, "
+         "so we confirm it for each order with our customs team."),
+        ("How long does production take?",
+         "Lead time depends on quantity, materials and printing. We confirm a dispatch date with your quote and keep you updated "
+         "through production and pre-shipment quality checks."),
+    ]
+
+
+def category_faqs(c):
+    names = [p["name"] for p in PRODUCTS if p["cat"] == c["key"]] + [t for t, _ in c["also"]]
+    lname = c["name"].lower()
+    return [
+        (f"Which {lname} do you manufacture?",
+         "Our range includes " + ", ".join(names[:-1]) + " and " + names[-1] + ". Every item is made to order to your size, material and print."),
+        ("Do you make custom sizes and printed designs?",
+         "Yes. We work from your dimensions, product weight and artwork, recommend the right paper specification, and share a sample for approval before bulk production."),
+        ("Which countries do you export to?", EXPORT_REACH),
+        ("Are your certifications suitable for international buyers?",
+         "We work to ISO 9001 quality management, use FSC®-certified paper on request, and are an IEC-registered exporter. Food-contact grades are available for food packaging."),
+        ("How do I get a price?",
+         "Send your requirement through the quote form or WhatsApp. We reply within one business day with a recommended specification and price."),
+    ]
+
+
 # ---------- category pages ----------
 def build_category(c):
     items = [p for p in PRODUCTS if p["cat"] == c["key"]]
@@ -337,7 +407,7 @@ def build_category(c):
 <div class="sec-head reveal"><div>
 <p class="eyebrow">The range</p>
 <h2 class="h2">Products in this line</h2>
-<p class="lead" style="margin-top:18px">Every item is made to order — your size, board grade and print. Open a product for its specifications and to request a quote.</p>
+<p class="lead" style="margin-top:18px">{e(c.get('seo', ''))} Every item is made to order — your size, board grade and print. Open a product for its specifications and to request a quote.</p>
 </div></div>
 <ul class="{grid_cls}">
 {cards}
@@ -363,7 +433,9 @@ def build_category(c):
 </div>
 </section>
 
-<section class="sec">
+{faq_section(category_faqs(c), c['name'] + " — common questions")}
+
+<section class="sec sec-soft">
 <div class="wrap">
 <div class="sec-head"><div><p class="eyebrow">Explore more</p><h2 class="h2">Other product categories</h2></div><a href="products.html" class="link-u">All products →</a></div>
 <div class="cgrid4">{others}</div>
@@ -371,10 +443,10 @@ def build_category(c):
 </section>'''
     lds = [crumbs_ld(links), ld({"@context": "https://schema.org", "@type": "ItemList", "name": c["name"],
                                  "itemListElement": [{"@type": "ListItem", "position": i, "url": SITE + "/" + prod_url(p), "name": p["name"]}
-                                                     for i, p in enumerate(items, 1)]})]
-    title = f"{c['name']} | Paper Packaging Exporter | OXY PACK GLOBAL"
-    page(cat_url(c), title, f"{c['short']} Made to order in Rajkot, India and exported worldwide by OXY PACK GLOBAL.", main, lds,
-         image=c["image"])
+                                                     for i, p in enumerate(items, 1)]}), faq_ld(category_faqs(c))]
+    title = f"{c['name']} | Manufacturer & Exporter India"
+    desc = f"{c['short']} Custom sizes and printing, samples before bulk orders, shipped worldwide FOB, CIF or DDP. Get a free quote."
+    page(cat_url(c), title, desc, main, lds, image=c["image"])
 
 
 # ---------- product pages ----------
@@ -440,7 +512,9 @@ def build_product(p):
 </div>
 </section>
 
-<section class="sec">
+{faq_section(product_faqs(p), "Questions about " + short_name(p))}
+
+<section class="sec sec-soft">
 <div class="wrap">
 <div class="sec-head"><div><p class="eyebrow">Related products</p><h2 class="h2">You may also need</h2></div><a href="{cat_url(c)}" class="link-u">All {e(c['name'].lower())} →</a></div>
 <ul class="pgrid g3c">
@@ -450,10 +524,12 @@ def build_product(p):
 </section>'''
     lds = [crumbs_ld(links), ld({"@context": "https://schema.org", "@type": "Product", "name": p["name"],
                                  "description": p["overview"], "image": SITE + "/" + p["img"], "category": c["name"],
-                                 "brand": {"@type": "Brand", "name": "OXY PACK GLOBAL"}, "url": SITE + "/" + prod_url(p)})]
-    page(prod_url(p), f"{p['name']} | {c['name']} | OXY PACK GLOBAL",
-         f"{p['short']} Made to order and exported from India by OXY PACK GLOBAL. HS {p['hs']}.", main, lds,
-         image=p["img"], band=False)
+                                 "brand": {"@type": "Brand", "name": "OXY PACK GLOBAL"}, "url": SITE + "/" + prod_url(p)}),
+           faq_ld(product_faqs(p))]
+    sn = re.sub(r"\s*\(.*?\)", "", p["name"]).strip()
+    page(prod_url(p), f"{sn[0].upper() + sn[1:]} | Manufacturer & Exporter India",
+         f"{p['short']} Custom sizes and printing, samples before bulk orders, shipped worldwide FOB, CIF or DDP. Get a free quote.",
+         main, lds, image=p["img"], band=False)
 
 
 # ---------- products overview ----------
@@ -518,6 +594,255 @@ def build_overview():
     page("products.html", "Paper Packaging Products: Boxes, Bags, Cartons & Food Packaging | OXY PACK GLOBAL",
          "Browse 5 paper packaging lines: corrugated boxes, paper bags & sacks, printed cartons & gift boxes, food service packaging and protective packaging. Made to order in India, exported worldwide.",
          main, lds, extra=redirect)
+
+
+# ---------- export page ----------
+EXPORT_FAQS = [
+    ("How do I start an order as an overseas buyer?",
+     "Send your product, size, quantity and destination port through the quote form or WhatsApp. We reply within one business day with a recommended specification and price, then share a sample for approval before production."),
+    ("Which Incoterms do you offer?",
+     "We quote FOB, CIF or DDP, and Ex-Works on request. Tell us your preferred terms and destination port and we include freight in the quote where needed."),
+    ("Can you ship full containers and smaller orders?",
+     "Yes. We plan container loads for FCL shipments and can book LCL for smaller orders, shipping from India's west-coast ports."),
+    ("Which export documents do you provide?",
+     "We prepare the commercial invoice, packing list and certificate of origin in-house, and coordinate the bill of lading with the shipping line or forwarder."),
+    ("Do you check quality before shipping?",
+     "Yes. We work to ISO 9001 processes, run batch tests for bursting strength, edge crush, compression and moisture where relevant, and share pre-shipment inspection reports before loading."),
+    ("Can you ship different products in one container?",
+     "Yes. Mixed loads of boxes, bags, cartons and protective packaging can be consolidated into one container to save freight."),
+]
+INCOTERMS = [
+    ("EXW", "Ex-Works", "Goods ready at our facility, export-packed.", "Pickup, export clearance, freight, insurance, import duties."),
+    ("FOB", "Free on Board", "Packing, inland transport, export clearance, loading on the vessel.", "Ocean freight, insurance, import clearance and duties."),
+    ("CIF", "Cost, Insurance & Freight", "Everything in FOB plus ocean freight and insurance to your port.", "Unloading, import clearance, duties, delivery."),
+    ("DDP", "Delivered Duty Paid", "Delivery to your door, including import duties and clearance.", "Unloading at your premises."),
+]
+
+
+def build_export():
+    links = [("Home", "index.html"), ("Export", "export.html")]
+    who = [("Importers & distributors", "Container loads of standard and custom packaging for your local market."),
+           ("Brands & manufacturers", "Branded boxes, bags and cartons made to your specification and artwork."),
+           ("Retail & e-commerce", "Mailer boxes, carry bags and paper void fill that replace plastic."),
+           ("Food service chains", "Food-grade cups, bowls, takeaway boxes and wraps for cafés and restaurants.")]
+    steps = [("Enquiry & brief", "Share size, weight, quantity and destination. Get a recommendation and quote within one business day."),
+             ("Sample & approval", "Dieline and physical sample for fit, strength and print sign-off."),
+             ("Production", "Scheduled manufacturing with a confirmed dispatch date and regular updates."),
+             ("Quality check", "Batch testing and pre-shipment inspection reports shared before loading."),
+             ("Shipping", "Palletised, container-loaded and shipped FOB, CIF or DDP with full export documents.")]
+    inc = "".join(f'<tr><th scope="row"><b>{a}</b><span>{e(n)}</span></th><td>{e(w)}</td><td>{e(y)}</td></tr>' for a, n, w, y in INCOTERMS)
+    docs = ["Commercial invoice with HS codes", "Packing list", "Certificate of origin", "Bill of lading (with your forwarder or the shipping line)",
+            "Pre-shipment inspection report"]
+    why = [("Made to order", "Your dimensions, board grade, print and quantity — not off-the-shelf stock."),
+           ("Certified quality", "ISO 9001 processes, FSC®-certified paper and an IEC-registered exporter."),
+           ("100% paper", "Plastic-free packaging for brands and markets moving away from single-use plastic."),
+           ("One partner", "Design, printing, production, testing, documents and shipping under one roof."),
+           ("Samples first", "Approve a physical sample before we start bulk production."),
+           ("Fast answers", "A reply within one business day, by email or WhatsApp.")]
+    home_t = [t for t in TESTIMONIALS if t["company"] in ("Shubha", "Nuvela Pharma", "Primeseal Straps")]
+    main = f'''<section class="page-hero dark grid-lines">
+<img src="assets/img/export-container-port.jpg" alt="" width="1024" height="576" class="bg-img" fetchpriority="high" style="opacity:.22">
+<div class="glow" style="right:-160px;top:-200px"></div>
+<div class="wrap">
+{crumbs(links)}
+<span class="pill">Export packaging partner · Since 2017</span>
+<h1 style="margin-top:22px">Paper packaging from India, <em>shipped to your port.</em></h1>
+<p>We manufacture custom paper packaging in Rajkot, India and export it to businesses in 20+ countries — with samples first, FOB, CIF or DDP terms, and every export document handled.</p>
+<div class="btn-row" style="margin-top:32px"><a href="#quote" class="btn btn-green">Get a free export quote {ARROW}</a><a href="https://wa.me/{WA}" class="btn btn-ghost" target="_blank" rel="noopener">{WA_ICON} Talk to export sales</a></div>
+{TRUST_ROW}
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap">
+<div class="sec-head reveal"><div><p class="eyebrow">Who we supply</p><h2 class="h2">Packaging for every business that ships</h2>
+<p class="lead" style="margin-top:16px">Whatever you sell and wherever you sell it, we make the paper packaging and deliver it to your port or warehouse.</p></div></div>
+<div class="g4">{"".join(f'<div class="soft-card reveal"><h3>{e(a)}</h3><p>{e(b)}</p></div>' for a, b in who)}</div>
+</div>
+</section>
+
+<section class="sec dark grid-lines rel ovh">
+<img src="assets/img/shipping-port-aerial.jpg" alt="" width="1024" height="683" class="bg-img" loading="lazy" decoding="async" style="opacity:.14">
+<div class="wrap rel">
+<div class="g2" style="align-items:end;margin-bottom:56px">
+<div><p class="eyebrow">How it works</p><h2 class="h2">From enquiry to your port in five steps</h2></div>
+<div><p class="lead">Shipping to buyers across these regions:</p><div class="regions"><span class="on">Africa</span><span>Middle East</span><span>Europe</span><span>Americas</span><span>Asia-Pacific</span></div></div>
+</div>
+<ol class="g5" style="list-style:none;margin:0;padding:0">{"".join(f'<li class="step{" hl" if i == 5 else ""} reveal"><strong>0{i}</strong><h3>{e(a)}</h3><p>{e(b)}</p></li>' for i, (a, b) in enumerate(steps, 1))}</ol>
+</div>
+</section>
+
+<section class="sec">
+<div class="wrap g2 start">
+<div class="reveal">
+<p class="eyebrow">Shipping terms</p>
+<h2 class="h2" style="margin-bottom:20px">Incoterms we work with</h2>
+<p class="lead">Choose how much of the journey you want us to handle. We quote FOB, CIF or DDP, and Ex-Works on request.</p>
+<div class="table-wrap"><table class="itable"><thead><tr><th scope="col">Term</th><th scope="col">We handle</th><th scope="col">You handle</th></tr></thead><tbody>{inc}</tbody></table></div>
+</div>
+<div class="reveal">
+<p class="eyebrow">Paperwork</p>
+<h2 class="h2" style="margin-bottom:20px">Export documents, handled</h2>
+<p class="lead">As an IEC-registered exporter, we prepare the paperwork your customs broker needs.</p>
+<ul class="checks" style="margin-top:24px">{"".join(f'<li>{TICK}<span>{e(d)}</span></li>' for d in docs)}</ul>
+<p style="margin-top:24px;font-size:15px;color:var(--muted)">Shipping full containers (FCL) or smaller loads (LCL) from India's west-coast ports. Mixed products can share one container.</p>
+</div>
+</div>
+</section>
+
+<section class="sec sec-soft">
+<div class="wrap">
+<div class="sec-head reveal"><div><p class="eyebrow">Why buyers choose us</p><h2 class="h2">An export partner, not just a box maker</h2></div></div>
+<div class="g3">{"".join(f'<div class="card reveal" style="padding:28px"><h3 style="margin-top:0">{e(a)}</h3><p>{e(b)}</p></div>' for a, b in why)}</div>
+</div>
+</section>
+
+{LOGO_STRIP}
+{testimonials_section(home_t, "What our customers say", "Brands that rely on our packaging and coordination.")}
+
+{faq_section(EXPORT_FAQS, "Exporting with us — common questions", soft=True)}
+
+<section id="quote" class="sec">
+<div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Request a quote</p><h2 class="h2">Get your export quote</h2>
+<p class="lead" style="margin-top:16px">Tell us what you need and where it's going. We reply within one business day with a specification and price.</p></div></div>
+<div class="cgrid">
+<div class="form-card">
+{quote_form("Export quote request — export page")}
+</div>
+<aside>{HOW_WE_WORK}</aside>
+</div>
+</div>
+</section>'''
+    lds = [crumbs_ld(links), faq_ld(EXPORT_FAQS)]
+    page("export.html", "Paper Packaging Exporter from India — Worldwide Shipping | OXY PACK GLOBAL",
+         "Custom paper packaging from India shipped to 20+ countries. FOB, CIF or DDP, samples before bulk orders, export documents handled. Get a free export quote.",
+         main, lds, image="assets/img/export-container-port.jpg", band=False, active="export.html")
+
+
+# ---------- buyer guides ----------
+try:
+    from guides_data import GUIDES  # noqa: E402
+except ImportError:
+    GUIDES = []
+GUIDE_IMG = {"import-paper-packaging-from-india": "assets/img/export-container-port.jpg",
+             "3-ply-vs-5-ply-vs-7-ply-corrugated-boxes": "assets/img/corrugated-box-open.jpg",
+             "hs-codes-for-paper-packaging": "assets/img/export-cartons-forklift.jpg"}
+GUIDE_DATE = "2026-11-19"
+PROD = {p["slug"]: p for p in PRODUCTS}
+
+
+def guide_url(g):
+    return f"guides/{g['slug']}.html"
+
+
+def build_guide(g):
+    links = [("Home", "index.html"), ("Buyer guides", "guides.html"), (g["h1"], guide_url(g))]
+    img = GUIDE_IMG.get(g["slug"], "assets/img/og-image.jpg")
+    rel = [PROD[s] for s in g.get("related", []) if s in PROD][:3]
+    others = [x for x in GUIDES if x is not g]
+    toc = "".join(f'<li><a href="#s{i}">{re.sub("<.*?>", "", h)}</a></li>'
+                  for i, h in enumerate(re.findall(r"<h2>(.*?)</h2>", g["body"]), 1))
+    n = iter(range(1, 100))
+    body = re.sub(r"<h2>", lambda m: f'<h2 id="s{next(n)}">', g["body"])
+    body = body.replace("<table>", '<div class="table-wrap"><table class="itable">').replace("</table>", "</table></div>")
+    main = f'''<section class="page-hero dark grid-lines">
+<img src="{img}" alt="" class="bg-img" fetchpriority="high" style="opacity:.18">
+<div class="wrap" style="padding-top:72px;padding-bottom:72px">
+{crumbs(links)}
+<span class="pill">Buyer guide · {g['read_time']} min read</span>
+<h1 style="margin-top:22px;max-width:960px">{e(g['h1'])}</h1>
+<p>{e(g['intro'])}</p>
+</div>
+</section>
+
+<section class="sec guide-sec">
+<div class="wrap guide-grid">
+<article class="prose">{body}</article>
+<aside class="guide-aside">
+<div class="toc"><p class="eyebrow">In this guide</p><ol>{toc}</ol></div>
+<div class="info-card grid-lines"><h2 style="color:#fff;font-size:20px;margin-bottom:10px">Need packaging quoted?</h2>
+<p style="color:#D3DBEA;font-size:15px;line-height:1.6;margin-bottom:20px">Send your size, quantity and destination. We reply within one business day.</p>
+<a href="#quote" class="btn btn-green" style="width:100%;justify-content:center">Get a free quote</a>
+<a href="https://wa.me/{WA}" target="_blank" rel="noopener" class="btn btn-outline-light" style="width:100%;justify-content:center;margin-top:10px">{WA_ICON} WhatsApp us</a></div>
+</aside>
+</div>
+</section>
+
+{faq_section(g['faqs'], "Frequently asked questions", soft=True)}
+
+{('<section class="sec"><div class="wrap"><div class="sec-head"><div><p class="eyebrow">Related products</p><h2 class="h2">Packaging mentioned in this guide</h2></div></div><ul class="pgrid g3c">' + "".join(pcard(x, prod_url(x)) for x in rel) + '</ul></div></section>') if rel else ''}
+
+{LOGO_STRIP}
+<section id="quote" class="sec sec-soft">
+<div class="wrap">
+<div class="sec-head"><div><p class="eyebrow">Request a quote</p><h2 class="h2">Ready to source your packaging?</h2>
+<p class="lead" style="margin-top:16px">Tell us what you need. We reply within one business day with a recommended specification and price.</p></div></div>
+<div class="cgrid">
+<div class="form-card">
+{quote_form("Quote request — guide: " + g['h1'])}
+</div>
+<aside style="display:flex;flex-direction:column;gap:16px">{HOW_WE_WORK}{"".join(f'<a class="ccard mini" href="{guide_url(o)}"><div class="body"><span class="tind">More guides</span><h3>{e(o["h1"])}</h3></div></a>' for o in others)}</aside>
+</div>
+</div>
+</section>'''
+    article = {"@context": "https://schema.org", "@type": "Article", "headline": g["h1"], "description": g["description"],
+               "image": SITE + "/" + img, "datePublished": GUIDE_DATE, "dateModified": GUIDE_DATE,
+               "author": {"@type": "Organization", "name": "OXY PACK GLOBAL", "url": SITE + "/"},
+               "publisher": {"@type": "Organization", "name": "OXY PACK GLOBAL",
+                             "logo": {"@type": "ImageObject", "url": SITE + "/assets/img/oxy-pack-global-logo.png"}},
+               "mainEntityOfPage": SITE + "/" + guide_url(g)}
+    page(guide_url(g), f"{g['title']} | OXY PACK GLOBAL", g["description"], main,
+         [crumbs_ld(links), ld(article), faq_ld(g["faqs"])], image=img, band=False, active="", og_type="article")
+
+
+def guide_cards(prefix_link=True):
+    return "".join(
+        f'<a class="ccard reveal" href="{guide_url(g)}"><img src="{GUIDE_IMG.get(g["slug"], "assets/img/og-image.jpg")}" alt="" width="1024" height="640" loading="lazy" decoding="async">'
+        f'<div class="body"><span class="num">BUYER GUIDE · {g["read_time"]} MIN READ</span><h3>{e(g["h1"])}</h3><p>{e(g["intro"])}</p>'
+        f'<span class="more">Read the guide {ARROW}</span></div></a>' for g in GUIDES)
+
+
+def build_guides_index():
+    links = [("Home", "index.html"), ("Buyer guides", "guides.html")]
+    main = f'''<section class="page-hero dark grid-lines">
+<div class="glow" style="right:-160px;top:-200px"></div>
+<div class="wrap">
+{crumbs(links)}
+<span class="pill">Resources for importers</span>
+<h1 style="margin-top:22px">Packaging buyer guides</h1>
+<p>Practical, no-nonsense guides for businesses sourcing paper packaging from India — from choosing box strength to HS codes and shipping terms.</p>
+</div>
+</section>
+<section class="sec">
+<div class="wrap">
+<div class="cgrid3">{guide_cards()}</div>
+</div>
+</section>
+{LOGO_STRIP}
+<section class="sec sec-soft"><div class="wrap" style="text-align:center">
+<h2 class="h2">Have a packaging question we haven't covered?</h2>
+<p class="lead" style="margin:16px auto 28px;max-width:640px">Our export team answers buyer questions every day. Ask us anything — we reply within one business day.</p>
+<div class="btn-row" style="justify-content:center"><a href="contact.html" class="btn btn-green" data-quote>Ask our team {ARROW}</a><a href="https://wa.me/{WA}" target="_blank" rel="noopener" class="btn btn-wa">{WA_ICON} WhatsApp</a></div>
+</div></section>'''
+    lds = [crumbs_ld(links), ld({"@context": "https://schema.org", "@type": "ItemList", "name": "Packaging buyer guides",
+                                 "itemListElement": [{"@type": "ListItem", "position": i, "url": SITE + "/" + guide_url(g), "name": g["h1"]}
+                                                     for i, g in enumerate(GUIDES, 1)]})]
+    page("guides.html", "Packaging Buyer Guides for Importers | OXY PACK GLOBAL",
+         "Free guides for businesses buying paper packaging from India: importing step by step, corrugated box strength, HS codes and shipping terms.",
+         main, lds, active="")
+
+
+GUIDES_RE = re.compile(r'<!-- guides -->.*?<!-- /guides -->\n?', re.S)
+
+
+def home_guides_section():
+    if not GUIDES:
+        return ""
+    return ('<!-- guides -->\n<section class="sec sec-soft">\n<div class="wrap">\n'
+            '<div class="sec-head reveal"><div><p class="eyebrow">Buyer guides</p><h2 class="h2">Sourcing packaging from India? Start here.</h2></div>'
+            '<a href="guides.html" class="link-u">All guides →</a></div>\n'
+            f'<div class="cgrid3">{guide_cards()}</div>\n</div>\n</section>\n<!-- /guides -->')
 
 
 # ---------- updates to hand-written pages ----------
@@ -589,13 +914,18 @@ def update_home():
     home_t = testimonials_section([t for t in TESTIMONIALS if t["home"]], "Brands that rely on our packaging",
                                   "Purchase and packaging teams on working with Oxy Pack Global.")
     s = s.replace('<section id="quote" class="sec sec-soft">', home_t + "\n\n" + '<section id="quote" class="sec sec-soft">', 1)
+    s = GUIDES_RE.sub("", s)
+    if GUIDES:
+        assert s.count('<section class="certs"') == 1, "certs section not found"
+        s = s.replace('<section class="certs"', home_guides_section() + "\n\n" + '<section class="certs"', 1)
     write("index.html", s)
 
 
 def write_sitemap():
     today = date.today().isoformat()
     urls = [("", "1.0"), ("products.html", "0.9")] + [(cat_url(c), "0.8") for c in CATEGORIES] + \
-           [(prod_url(p), "0.7") for p in PRODUCTS] + [("about.html", "0.6"), ("industries.html", "0.6"), ("contact.html", "0.8")]
+           [(prod_url(p), "0.7") for p in PRODUCTS] + [("export.html", "0.9"), ("guides.html", "0.7")] + \
+           [(guide_url(g), "0.7") for g in GUIDES] + [("about.html", "0.6"), ("industries.html", "0.6"), ("contact.html", "0.8")]
     body = "\n".join(f"  <url><loc>{SITE}/{u}</loc><lastmod>{today}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>"
                      for u, pr in urls)
     write("sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>\n')
@@ -607,6 +937,10 @@ if __name__ == "__main__":
     for p in PRODUCTS:
         build_product(p)
     build_overview()
+    build_export()
+    for g in GUIDES:
+        build_guide(g)
+    build_guides_index()
     update_root_pages()
     update_home()
     write_sitemap()
