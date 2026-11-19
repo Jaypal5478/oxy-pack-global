@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jaypal5478.github.io/oxy-pack-global/sitemap.xml
+Sitemap: https://oxypackglobal.com/sitemap.xml

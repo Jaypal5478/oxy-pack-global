@@ -27,8 +27,39 @@
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
 
+  // Quote buttons jump to the form when this page has one
+  if (document.getElementById('quote-form')) {
+    document.querySelectorAll('[data-quote]').forEach(function (a) {
+      a.setAttribute('href', '#quote-form');
+      a.addEventListener('click', function () {
+        if (nav && nav.classList.contains('open')) { nav.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+      });
+    });
+  }
+
+  // Product filter (products page)
+  var filterBtns = document.querySelectorAll('.pfilter button');
+  var pcards = document.querySelectorAll('#pgrid .pcard');
+  filterBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var f = b.getAttribute('data-filter');
+      filterBtns.forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      pcards.forEach(function (c) { c.hidden = !(f === 'all' || c.getAttribute('data-cat') === f); });
+    });
+  });
+
   // Quote form (FormSubmit AJAX endpoint)
   var form = document.getElementById('quote-form');
+  // Prefill from a product card link (?product=...&cat=...)
+  if (form && 'URLSearchParams' in window) {
+    var qs = new URLSearchParams(location.search);
+    var product = qs.get('product');
+    var catMap = { corrugated: 0, bags: 1, cartons: 2, food: 3, protective: 4 };
+    var sel = document.getElementById('category');
+    if (sel && catMap.hasOwnProperty(qs.get('cat'))) sel.selectedIndex = catMap[qs.get('cat')];
+    var msg = document.getElementById('message');
+    if (msg && product && !msg.value) msg.value = 'Product: ' + product.slice(0, 120) + '\n';
+  }
   if (form) {
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
