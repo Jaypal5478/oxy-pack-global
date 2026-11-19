@@ -226,6 +226,46 @@ LOGO_STRIP = ('<!-- clients -->\n<section class="logo-strip" aria-label="Custome
               '</section>\n<!-- /clients -->')
 CLIENTS_RE = re.compile(r'<!-- clients -->.*?<!-- /clients -->\n?', re.S)
 
+# Real packaging made for customers (photos from the customers' own websites), shown as a masonry gallery.
+# (file in assets/img/gallery, width, height, title, client, product slug, category keys)
+GALLERY = [
+    ("gwalia-sweets-gift-hamper-1.jpg", 800, 1000, "Printed sweet gift hamper", "Gwalia Sweets", "rigid-gift-boxes", ["cartons", "food"]),
+    ("shubha-jewellery-gift-boxes.jpg", 900, 900, "Jewellery boxes & paper bags", "Shubha", "rigid-gift-boxes", ["cartons", "bags"]),
+    ("mdh-haldi-carton.jpg", 1000, 1000, "Printed spice carton", "MDH", "printed-folding-cartons", ["cartons"]),
+    ("gwalia-sweets-gift-hamper-2.jpg", 800, 1000, "Festive sweet hamper box", "Gwalia Sweets", "rigid-gift-boxes", ["cartons", "food"]),
+    ("kitchen-xpress-kitchen-king-carton.jpg", 760, 760, "Masala folding carton", "Kitchen Xpress", "printed-folding-cartons", ["cartons"]),
+    ("chhedas-sweet-box.jpg", 900, 900, "Assorted sweet box", "Chheda's", "rigid-gift-boxes", ["cartons", "food"]),
+    ("giva-jewellery-box.jpg", 504, 504, "Jewellery gift box", "GIVA", "rigid-gift-boxes", ["cartons"]),
+    ("gwalia-sweets-gift-hamper-3.jpg", 800, 1000, "Premium hamper with handle", "Gwalia Sweets", "rigid-gift-boxes", ["cartons", "food"]),
+    ("mothers-recipe-masala-carton.jpg", 860, 860, "Ready-to-cook masala carton", "Mother's Recipe", "printed-folding-cartons", ["cartons", "food"]),
+    ("mdh-lal-mirch-carton.jpg", 1000, 1000, "Printed spice carton", "MDH", "printed-folding-cartons", ["cartons"]),
+    ("gwalia-sweets-gift-hamper-4.jpg", 800, 1000, "Window sweet gift box", "Gwalia Sweets", "rigid-gift-boxes", ["cartons", "food"]),
+    ("kitchen-xpress-pani-puri-carton.jpg", 761, 761, "Masala folding carton", "Kitchen Xpress", "printed-folding-cartons", ["cartons"]),
+    ("kitchen-xpress-garam-masala-carton.jpg", 761, 761, "Masala folding carton", "Kitchen Xpress", "printed-folding-cartons", ["cartons"]),
+]
+GALLERY_RE = re.compile(r'<!-- gallery -->.*?<!-- /gallery -->\n?', re.S)
+
+
+def gallery_section(items, title, lead, soft=False, link=True, eyebrow="Our work"):
+    if len(items) < 3:
+        return ""
+    lis = "".join(
+        f'<li class="m-item"><button type="button" class="m-open" data-full="assets/img/gallery/{f}" '
+        f'data-caption="{e(t)} · {e(c)}"><img src="assets/img/gallery/{f}" alt="{e(t)} made for {e(c)}" width="{w}" height="{h}" '
+        f'loading="lazy" decoding="async"><span class="m-cap"><b>{e(t)}</b>{e(c)}</span></button></li>'
+        for f, w, h, t, c, _p, _k in items)
+    more = '<a href="contact.html" class="link-u">Start your project →</a>' if link else ""
+    return (f'<!-- gallery -->\n<section class="sec gallery-sec{" sec-soft" if soft else ""}">\n<div class="wrap">\n'
+            f'<div class="sec-head reveal"><div><p class="eyebrow">{e(eyebrow)}</p><h2 class="h2">{e(title)}</h2>'
+            f'<p class="lead" style="margin-top:16px">{e(lead)}</p></div>{more}</div>\n'
+            f'<ul class="masonry">{lis}</ul>\n'
+            '<p class="pnote">Packaging made for our customers. Brand names, logos and artwork belong to their respective owners.</p>\n'
+            '</div>\n</section>\n<!-- /gallery -->')
+
+
+def gallery_for(cat=None, product=None):
+    return [g for g in GALLERY if (cat is None or cat in g[6]) and (product is None or g[5] == product)]
+
 # Customer testimonials (approved in writing by each customer).
 # "cats" = category pages the quote also appears on; "home" = shown on the home page.
 TESTIMONIALS = [
@@ -413,6 +453,7 @@ def build_category(c):
 </div>
 </section>
 
+{gallery_section(gallery_for(c['key']), "Real packaging we've made", "A few of the boxes and cartons we've produced for customers in this product line.")}
 {testimonials_section(cat_testimonials(c['key']), "Trusted by brands like yours", "Feedback from customers who use our " + c['name'].lower() + ".", soft=True) if cat_testimonials(c['key']) else ""}
 {LOGO_STRIP}
 <section class="sec sec-soft">
@@ -509,6 +550,8 @@ def build_product(p):
 </div>
 </section>
 
+{gallery_section(gallery_for(product=p['slug']), "Real projects", "Examples of this packaging we've made for our customers.", soft=True)}
+
 {faq_section(product_faqs(p), "Questions about " + short_name(p))}
 
 <section class="sec sec-soft">
@@ -570,6 +613,8 @@ def build_overview():
 </div>
 </div>
 </section>
+
+{gallery_section(GALLERY, "Real packaging, made for real brands", "Gift boxes, sweet hampers and printed cartons we've produced for our customers.")}
 
 <section class="sec sec-soft">
 <div class="wrap">
@@ -637,6 +682,7 @@ MARKETS = [
         industries=["Cafés & coffee chains", "Restaurants & QSR", "Cloud kitchens", "Catering & airlines", "Retail & malls",
                     "Dates, sweets & bakeries", "Perfume & gifting", "Logistics & re-export"],
         testimonials=["Bikaji", "Shubha", "Vijay Mamra"],
+        gallery_product="rigid-gift-boxes",
         faqs=[
             ("Do you supply packaging to Dubai, Abu Dhabi and Saudi Arabia?",
              "Yes. We ship to buyers across the UAE, Saudi Arabia, Oman, Qatar, Kuwait and Bahrain, by sea from India's west coast to the main Gulf ports."),
@@ -755,6 +801,7 @@ def build_market(m):
 </div>
 </section>
 
+{gallery_section(gallery_for(product=m['gallery_product']) if m.get('gallery_product') else [], "Gift packaging we've made", "Premium boxes and hampers for sweets, jewellery and gifting brands.", soft=True)}
 {LOGO_STRIP}
 {testimonials_section(tests, "What our customers say", "Brands that rely on our packaging and coordination.", soft=True) if tests else ""}
 
@@ -1062,6 +1109,10 @@ def update_home():
                                   "Purchase and packaging teams on working with Oxy Pack Global.")
     s = s.replace('<section id="quote" class="sec sec-soft">', home_t + "\n\n" + '<section id="quote" class="sec sec-soft">', 1)
     s = GUIDES_RE.sub("", s)
+    s = GALLERY_RE.sub("", s)
+    assert s.count('<section class="sec kraft">') == 1, "kraft section not found"
+    s = s.replace('<section class="sec kraft">', gallery_section(GALLERY, "Real packaging, made for real brands",
+                  "Gift boxes, sweet hampers and printed cartons we've produced for our customers.") + "\n\n" + '<section class="sec kraft">', 1)
     if GUIDES:
         assert s.count('<section class="certs"') == 1, "certs section not found"
         s = s.replace('<section class="certs"', home_guides_section() + "\n\n" + '<section class="certs"', 1)

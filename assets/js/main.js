@@ -23,6 +23,27 @@
     els.forEach(function (el) { el.classList.add('in'); });
   }
 
+  // Gallery lightbox
+  var openers = document.querySelectorAll('.m-open');
+  if (openers.length && typeof HTMLDialogElement === 'function') {
+    var lb = document.createElement('dialog');
+    lb.className = 'lb';
+    lb.innerHTML = '<button type="button" class="lb-close" aria-label="Close">×</button><figure><img alt=""><figcaption></figcaption></figure>';
+    document.body.appendChild(lb);
+    var lbImg = lb.querySelector('img'), lbCap = lb.querySelector('figcaption');
+    lb.querySelector('.lb-close').addEventListener('click', function () { lb.close(); });
+    lb.addEventListener('click', function (ev) { if (ev.target === lb) lb.close(); });
+    openers.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var img = b.querySelector('img');
+        lbImg.src = img.currentSrc || img.src;
+        lbImg.alt = img.alt;
+        lbCap.textContent = b.getAttribute('data-caption') || '';
+        lb.showModal();
+      });
+    });
+  }
+
   // Footer year
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();

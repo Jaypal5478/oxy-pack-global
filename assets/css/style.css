@@ -505,3 +505,21 @@ a.soft-card:hover{border-color:var(--green-500);color:inherit}
 .term dd{margin:10px 0 0;font-size:15px;line-height:1.65;color:var(--muted-2)}
 @media (max-width:1000px){.terms-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){.terms-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* masonry gallery + lightbox */
+.masonry{columns:4 240px;column-gap:16px;list-style:none;margin:0;padding:0}
+.m-item{break-inside:avoid;margin:0 0 16px}
+.m-open{display:block;position:relative;width:100%;padding:0;margin:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff;cursor:zoom-in;font:inherit;text-align:left}
+.m-open img{display:block;width:100%;height:auto;transition:transform .5s ease}
+.m-open:hover img{transform:scale(1.04)}
+.m-cap{position:absolute;left:0;right:0;bottom:0;padding:36px 16px 14px;background:linear-gradient(0deg,rgba(8,23,47,.88),rgba(8,23,47,0));color:#D3DBEA;font-size:13px;line-height:1.4;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .25s ease}
+.m-cap b{display:block;color:#fff;font-family:var(--font-head);font-size:15px;font-weight:700}
+.m-open:hover .m-cap,.m-open:focus-visible .m-cap{opacity:1;transform:none}
+@media (hover:none){.m-cap{opacity:1;transform:none}}
+@media (max-width:620px){.masonry{columns:2;column-gap:10px}.m-item{margin-bottom:10px}.m-cap{padding:28px 10px 10px;font-size:12px}.m-cap b{font-size:13px}}
+.lb{border:0;padding:0;background:transparent;max-width:min(94vw,1000px);max-height:94vh;overflow:visible}
+.lb::backdrop{background:rgba(8,23,47,.9)}
+.lb figure{margin:0;text-align:center}
+.lb img{max-width:100%;max-height:82vh;width:auto;height:auto;border-radius:var(--radius);background:#fff;margin:0 auto}
+.lb figcaption{color:#fff;font-weight:600;margin-top:14px;font-size:15px}
+.lb-close{position:absolute;top:-14px;right:-14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:var(--navy-800);font-size:22px;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.3)}
