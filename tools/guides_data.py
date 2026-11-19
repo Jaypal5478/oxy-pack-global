@@ -54,7 +54,7 @@ GUIDES = [
 <h2>Export documents you should expect</h2>
 <p>Paper packaging is a straightforward export product, and the documentation is usually simple. Expect the following:</p>
 <ul>
-<li><strong>Commercial invoice</strong> showing the buyer, seller, description of goods, HS code, quantity, unit price, total value and Incoterm.</li>
+<li><strong>Commercial invoice</strong> showing the buyer, seller, description of goods, quantity, unit price, total value and Incoterm.</li>
 <li><strong>Packing list</strong> detailing the number of pallets or cartons, contents of each, and net and gross weights and volumes.</li>
 <li><strong>Certificate of origin</strong> confirming the goods were made in India. A preferential certificate may reduce import duty where a trade agreement applies between India and your country, so ask your customs broker whether one is useful.</li>
 <li><strong>Bill of lading</strong> for sea freight (or an air waybill for air shipments), issued by the carrier as a receipt and, for an original bill, a document of title.</li>
@@ -108,7 +108,7 @@ GUIDES = [
 <li>Request and test samples with your real product.</li>
 <li>Sign off an approved reference sample and artwork proof.</li>
 <li>Confirm the Incoterm, who arranges freight and who insures the goods.</li>
-<li>Check the HS code and import duty with your customs broker.</li>
+
 <li>Agree the quality criteria and how pre-shipment checks will be done.</li>
 <li>Confirm container size, loading method and pallet type.</li>
 <li>Review draft documents (invoice, packing list, certificate of origin) before the vessel sails.</li>
@@ -236,124 +236,5 @@ GUIDES = [
             ("How does humidity affect corrugated boxes?", "Board absorbs moisture and loses stacking strength as it gets damp. For sea freight and humid destinations, choose a higher grade, stronger liners or water-resistant coatings."),
         ],
         related=["corrugated-export-cartons", "heavy-duty-boxes", "printed-mailer-boxes", "paper-edge-protectors"],
-    ),
-    dict(
-        slug="hs-codes-for-paper-packaging",
-        title="HS Codes for Paper Packaging: 4819, 4823 and More",
-        description="Find the HS code for corrugated boxes, paper bags, paper cups and more. A clear guide to HS code 4819, 4823 and related paper packaging codes for importers.",
-        h1="HS Codes for Paper Packaging: A Guide for Importers",
-        intro="Every shipment of packaging you import needs an HS code, and the code decides which duty rate and rules apply. This guide explains how HS codes work for paper packaging and maps common products, from corrugated boxes to paper cups, to their usual headings.",
-        read_time=8,
-        body="""
-<h2>What is an HS code?</h2>
-<p>The Harmonized Commodity Description and Coding System, usually called the HS, is an international product classification maintained by the World Customs Organization. More than 200 countries and economies use it as the basis for their customs tariffs and trade statistics.</p>
-<p>Every product you import is classified under an HS code. Customs authorities use that code to decide the import duty rate, any taxes, trade agreement benefits, and whether licences or other controls apply. Getting it right avoids delays, penalties and unexpected costs.</p>
-
-<h2>How HS codes are structured</h2>
-<p>An HS code is read from left to right, becoming more specific at each level:</p>
-<ul>
-<li><strong>Chapter (2 digits)</strong>: for example, Chapter 48 covers paper and paperboard and articles of paper pulp, paper or paperboard.</li>
-<li><strong>Heading (4 digits)</strong>: for example, 4819 covers cartons, boxes, cases, bags and other packing containers of paper.</li>
-<li><strong>Subheading (6 digits)</strong>: for example, 4819.10 covers cartons, boxes and cases of corrugated paper or paperboard.</li>
-</ul>
-<p>The first six digits are the same in every country that uses the HS. Individual countries then add further digits for their own tariff and statistical purposes:</p>
-<ul>
-<li><strong>India</strong> uses the 8-digit ITC-HS classification for exports and imports.</li>
-<li><strong>The United States</strong> uses the 10-digit Harmonized Tariff Schedule (HTS).</li>
-<li><strong>The European Union</strong> uses the 8-digit Combined Nomenclature (CN), with further digits in the TARIC database for specific measures.</li>
-<li><strong>The UK, GCC states, Australia and African customs unions</strong> each publish their own national tariffs built on the same 6-digit base.</li>
-</ul>
-<p>This is why the code on your supplier's export invoice may have a different number of digits from the code your customs broker declares at import. The first six digits should normally match.</p>
-
-<h2>HS code 4819: boxes, cartons and bags of paper</h2>
-<p>Heading 4819 is the main home for paper packaging. Its subheadings are:</p>
-<ul>
-<li><strong>4819.10</strong>: cartons, boxes and cases of corrugated paper or paperboard. This is the HS code for corrugated boxes, including shipping cartons, mailer boxes, pizza boxes and heavy-duty export cartons.</li>
-<li><strong>4819.20</strong>: folding cartons, boxes and cases of non-corrugated paper or paperboard. This covers printed folding cartons made from duplex, SBS or similar board.</li>
-<li><strong>4819.30</strong>: sacks and bags having a base of a width of 40 cm or more. This typically covers multiwall paper sacks for cement, flour, chemicals and animal feed.</li>
-<li><strong>4819.40</strong>: other sacks and bags, including cones. This covers most paper carry bags, grocery bags, SOS bags and paper mailers with a base narrower than 40 cm.</li>
-<li><strong>4819.50</strong>: other packing containers, including record sleeves. This can cover rigid set-up boxes and other containers that are not folding cartons.</li>
-<li><strong>4819.60</strong>: box files, letter trays, storage boxes and similar articles, of a kind used in offices, shops or the like.</li>
-</ul>
-<p>Note the base-width test for bags: the same style of paper bag can fall under 4819.30 or 4819.40 depending on its base dimension.</p>
-
-<h2>HS code 4823: paper cups, plates and moulded fibre</h2>
-<p>Heading 4823 covers other articles of paper, paperboard and paper pulp not specified elsewhere. For packaging buyers, the key subheadings are:</p>
-<ul>
-<li><strong>4823.69</strong>: trays, dishes, plates, cups and the like, of paper or paperboard, other than of bamboo paper. This is the usual HS code for paper cups, paper bowls, soup containers and paper plates.</li>
-<li><strong>4823.70</strong>: moulded or pressed articles of paper pulp. This covers moulded fibre tableware such as bagasse and pulp plates, bowls and clamshells, as well as moulded pulp trays and inserts.</li>
-<li><strong>4823.90</strong>: other. Items such as paper straws and paper edge protectors are often classified here, but classification can vary between countries and depends on the exact product.</li>
-</ul>
-
-<h2>Other relevant codes: 4822, 4806 and 4808</h2>
-<ul>
-<li><strong>4822</strong>: bobbins, spools, cops and similar supports of paper pulp, paper or paperboard. Paper tubes and cores used for winding textiles, films, labels or other materials generally fall here.</li>
-<li><strong>4806.20</strong>: greaseproof papers. Greaseproof wrapping paper supplied in rolls or sheets is usually classified here. If the paper is printed or cut into specific shapes for a final use, a different heading may apply.</li>
-<li><strong>4808</strong>: paper and paperboard, corrugated, creped, crinkled, embossed or perforated, in rolls or sheets. Corrugated board in rolls or sheets, rather than made-up boxes, is classified under 4808.10.</li>
-</ul>
-
-<h2>Paper packaging HS code table</h2>
-<p>The table below maps common packaging products to the 6-digit HS subheading they are usually classified under.</p>
-<table>
-<thead>
-<tr><th>Product</th><th>Usual HS code (6-digit)</th><th>Notes</th></tr>
-</thead>
-<tbody>
-<tr><td>Corrugated shipping and export cartons</td><td>4819.10</td><td>Applies to 3, 5 and 7 ply boxes</td></tr>
-<tr><td>Printed mailer boxes (corrugated)</td><td>4819.10</td><td>E or B flute mailers</td></tr>
-<tr><td>Corrugated pizza boxes</td><td>4819.10</td><td>Corrugated construction</td></tr>
-<tr><td>Printed folding cartons</td><td>4819.20</td><td>Non-corrugated paperboard</td></tr>
-<tr><td>Kraft takeaway food boxes (folding board)</td><td>4819.20</td><td>Some countries may treat food containers differently; confirm locally</td></tr>
-<tr><td>Rigid gift boxes</td><td>4819.50 or 4819.20</td><td>Depends on construction; rigid set-up boxes are often 4819.50</td></tr>
-<tr><td>Multiwall paper sacks (base 40 cm or more)</td><td>4819.30</td><td>Industrial and agricultural sacks</td></tr>
-<tr><td>Kraft carry bags, SOS grocery bags</td><td>4819.40</td><td>Base narrower than 40 cm</td></tr>
-<tr><td>Paper courier mailers</td><td>4819.40</td><td>Paper envelopes for shipping</td></tr>
-<tr><td>Paper cups</td><td>4823.69</td><td>Single and double wall cups</td></tr>
-<tr><td>Paper bowls and soup containers</td><td>4823.69</td><td>Paperboard food containers</td></tr>
-<tr><td>Moulded fibre tableware</td><td>4823.70</td><td>Moulded or pressed pulp</td></tr>
-<tr><td>Paper straws</td><td>4823.90</td><td>Classification can vary</td></tr>
-<tr><td>Paper edge protectors</td><td>4823.90</td><td>Classification can vary</td></tr>
-<tr><td>Paper tubes and cores</td><td>4822</td><td>Check the 6-digit split for textile use or other</td></tr>
-<tr><td>Greaseproof wrapping paper</td><td>4806.20</td><td>In rolls or sheets</td></tr>
-<tr><td>Corrugated board in rolls or sheets</td><td>4808.10</td><td>Not made-up boxes</td></tr>
-</tbody>
-</table>
-<p><strong>Disclaimer: these HS codes are indicative only and are provided for general guidance; final classification is the responsibility of the importer and should be confirmed with your customs broker or the customs authority in your country.</strong></p>
-
-<h2>Why duty rates differ by destination</h2>
-<p>The HS code is shared, but the duty rate attached to it is set by each importing country. The same 4819.10 carton can attract a different rate in the UAE, the EU, the UK, the USA, Australia or an African customs union. On top of the duty, VAT, GST or sales taxes may apply at import.</p>
-<p>Trade agreements can reduce or remove duty when goods qualify as originating in India and a valid preferential certificate of origin is presented. Rules of origin, documentation and tariff schedules vary by agreement, so ask your broker whether a preference is available for your product and how to claim it.</p>
-
-<h2>Common classification mistakes</h2>
-<ul>
-<li><strong>Corrugated versus non-corrugated.</strong> A printed box made from corrugated E flute board is 4819.10, not 4819.20, even though it may look like a folding carton.</li>
-<li><strong>Ignoring the bag base width.</strong> Bags with a base of 40 cm or more belong in 4819.30; narrower bags in 4819.40.</li>
-<li><strong>Confusing paperboard and pulp.</strong> Cups and bowls made from paperboard are 4823.69, while moulded pulp products are 4823.70.</li>
-<li><strong>Classifying by material instead of article.</strong> Board in sheets is 4808 or another paper heading, but once it becomes a box, the article heading 4819 applies.</li>
-<li><strong>Using a different code on the invoice and declaration.</strong> Mismatches can trigger customs queries. Agree the code with your supplier before shipping.</li>
-</ul>
-
-<h2>How to confirm the right code</h2>
-<ol>
-<li>Describe the product precisely: material, construction, dimensions and intended use.</li>
-<li>Ask your supplier for the HS code they will declare on export documents.</li>
-<li>Share the description and code with your customs broker, who confirms the national tariff line at destination.</li>
-<li>For high-volume or unusual items, consider a binding tariff ruling from your customs authority.</li>
-</ol>
-
-<h2>Sourcing paper packaging from OXY PACK GLOBAL</h2>
-<p>OXY PACK GLOBAL, founded in 2017 in Rajkot, Gujarat, is an IEC-registered exporter of 100% paper packaging, including corrugated boxes, paper bags and sacks, printed cartons and gift boxes, food service packaging and paper protective packaging. We ship to more than 20 countries on FOB, CIF or DDP terms and include product descriptions and HS codes on our export documents for your broker to review.</p>
-
-<h2>Get a quote</h2>
-<p>Tell us the product, size, quantity and destination using the form on this page, and we will reply within one business day with a quotation and the HS code we expect to use on the export invoice.</p>
-""",
-        faqs=[
-            ("What is the HS code for corrugated boxes?", "Cartons, boxes and cases of corrugated paper or paperboard are classified under HS 4819.10. Your country adds further digits for its own tariff line."),
-            ("What is the HS code for paper cups?", "Paper cups are usually classified under HS 4823.69, which covers trays, dishes, plates, cups and similar articles of paper or paperboard other than bamboo."),
-            ("What does HS code 4819 cover?", "Heading 4819 covers cartons, boxes, cases, bags and other packing containers of paper, paperboard, cellulose wadding or webs of cellulose fibres, plus box files and similar office articles."),
-            ("What is the HS code for paper bags?", "Paper bags with a base width of 40 cm or more fall under 4819.30, while other paper bags, including most carry bags, usually fall under 4819.40."),
-            ("Who decides the final HS code for my import?", "The importer is responsible for correct classification, usually with the help of a customs broker. Codes in this guide are indicative and should be confirmed for your destination."),
-        ],
-        related=["corrugated-export-cartons", "paper-cups", "kraft-carry-bags", "moulded-fibre-tableware"],
     ),
 ]

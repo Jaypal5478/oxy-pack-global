@@ -344,9 +344,6 @@ def product_faqs(p):
          f"Yes. Every order is made to your specification, including your artwork and brand colours. Printing options: {printing}."),
         ("Can I get a sample before placing a bulk order?", SAMPLE_ANSWER),
         (f"Do you ship {n} to my country?", EXPORT_REACH),
-        (f"What is the HS code for {n}?",
-         f"{p['hs']} is the indicative HS code. The exact code depends on construction and your country's tariff schedule, "
-         "so we confirm it for each order with our customs team."),
         ("How long does production take?",
          "Lead time depends on quantity, materials and printing. We confirm a dispatch date with your quote and keep you updated "
          "through production and pre-shipment quality checks."),
@@ -459,7 +456,6 @@ def build_product(p):
     wa = f"https://wa.me/{WA}?text=" + urllib.parse.quote(f"Hello OXY PACK GLOBAL, I'd like a quote for {p['name']}.")
     feats = "".join(f'<li>{TICK}<span>{e(f)}</span></li>' for f in p["features"])
     specs = "".join(f'<tr><th scope="row">{e(k)}</th><td>{e(v)}</td></tr>' for k, v in p["specs"])
-    specs += f'<tr><th scope="row">HS code</th><td>{e(p["hs"])} (indicative)</td></tr>'
     apps = "".join(f'<span>{e(a)}</span>' for a in p["apps"])
     main = f'''<section class="page-hero pd dark grid-lines">
 <div class="glow" style="right:-200px;top:-220px"></div>
@@ -470,7 +466,7 @@ def build_product(p):
 <span class="pill">{e(c['name'])}</span>
 <h1>{e(p['name'])}</h1>
 <p>{e(p['short'])}</p>
-<dl class="facts"><div><dt>HS code</dt><dd>{e(p['hs'])}</dd></div><div><dt>Top markets</dt><dd>{e(p['markets'])}</dd></div><div><dt>Supply</dt><dd>Made to order</dd></div></dl>
+<dl class="facts"><div><dt>Supply</dt><dd>Made to order</dd></div><div><dt>Printing</dt><dd>Your artwork</dd></div><div><dt>Shipping</dt><dd>Worldwide</dd></div></dl>
 <div class="btn-row"><a href="#quote" class="btn btn-green">Get a free quote {ARROW}</a><a href="{e(wa)}" class="btn btn-ghost" target="_blank" rel="noopener">{WA_ICON} Ask on WhatsApp</a></div>
 {TRUST_ROW}
 </div>
@@ -585,7 +581,7 @@ def build_overview():
 <ul class="pgrid g3c">
 {hot}
 </ul>
-<p class="pnote">HS codes are indicative. We confirm the exact classification for each order with our customs team. Product photos are representative (via <a href="https://www.pexels.com/license/" rel="nofollow noopener" target="_blank" style="color:#6B7486">Pexels</a>); every order is made to your specification.</p>
+<p class="pnote">Product photos are representative (via <a href="https://www.pexels.com/license/" rel="nofollow noopener" target="_blank" style="color:#6B7486">Pexels</a>); every order is made to your specification.</p>
 </div>
 </section>'''
     lds = [crumbs_ld([("Home", ""), ("Products", "products.html")]),
@@ -875,7 +871,7 @@ except ImportError:
     GUIDES = []
 GUIDE_IMG = {"import-paper-packaging-from-india": "assets/img/export-container-port.jpg",
              "3-ply-vs-5-ply-vs-7-ply-corrugated-boxes": "assets/img/corrugated-box-open.jpg",
-             "hs-codes-for-paper-packaging": "assets/img/export-cartons-forklift.jpg"}
+}
 GUIDE_DATE = "2026-11-19"
 PROD = {p["slug"]: p for p in PRODUCTS}
 
@@ -948,7 +944,10 @@ def guide_cards(prefix_link=True):
     return "".join(
         f'<a class="ccard reveal" href="{guide_url(g)}"><img src="{GUIDE_IMG.get(g["slug"], "assets/img/og-image.jpg")}" alt="" width="1024" height="640" loading="lazy" decoding="async">'
         f'<div class="body"><span class="num">BUYER GUIDE · {g["read_time"]} MIN READ</span><h3>{e(g["h1"])}</h3><p>{e(g["intro"])}</p>'
-        f'<span class="more">Read the guide {ARROW}</span></div></a>' for g in GUIDES)
+        f'<span class="more">Read the guide {ARROW}</span></div></a>' for g in GUIDES) + (
+        f'<div class="ccard navy reveal"><div class="body"><span class="num" style="color:var(--green-300)">ASK AN EXPERT</span>'
+        f'<h3>Have a packaging question?</h3><p>Our team helps buyers choose the right paper packaging every day. Ask us anything.</p>'
+        f'<a class="more" href="contact.html">Ask our team {ARROW}</a></div></div>' if len(GUIDES) % 3 else "")
 
 
 def build_guides_index():
@@ -959,7 +958,7 @@ def build_guides_index():
 {crumbs(links)}
 <span class="pill">Resources for importers</span>
 <h1 style="margin-top:22px">Packaging buyer guides</h1>
-<p>Practical, no-nonsense guides for businesses sourcing paper packaging from India — from choosing box strength to HS codes and shipping terms.</p>
+<p>Practical, no-nonsense guides for businesses sourcing paper packaging from India — from choosing box strength to sourcing step by step.</p>
 </div>
 </section>
 <section class="sec">
@@ -977,7 +976,7 @@ def build_guides_index():
                                  "itemListElement": [{"@type": "ListItem", "position": i, "url": SITE + "/" + guide_url(g), "name": g["h1"]}
                                                      for i, g in enumerate(GUIDES, 1)]})]
     page("guides.html", "Packaging Buyer Guides for Importers | OXY PACK GLOBAL",
-         "Free guides for businesses buying paper packaging from India: importing step by step, corrugated box strength, HS codes and shipping terms.",
+         "Free guides for businesses buying paper packaging from India: importing step by step and choosing corrugated box strength.",
          main, lds, active="")
 
 
